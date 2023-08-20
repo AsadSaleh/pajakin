@@ -255,6 +255,17 @@ export default function Home() {
           </tr>
         </tbody>
       </table>
+
+      {bruto && (
+        <div>
+          Sehingga bisa disimpulkan bahwa gaji bersih (netto) kamu per bulan
+          sebesar {formatCurrency(Number(bruto) - pphTerutangPerbulan)}&nbsp;
+          <span className="text-slate-400">
+            ({formatCurrency(Number(bruto))} -{" "}
+            {formatCurrency(pphTerutangPerbulan)})
+          </span>
+        </div>
+      )}
     </main>
   );
 }
