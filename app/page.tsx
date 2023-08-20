@@ -141,10 +141,10 @@ export default function Home() {
       </h1>
 
       <div className="flex gap-3 items-center">
-        <label className="text-slate-300">Gaji Bruto Bulanan</label>
+        <label className="dark:text-slate-300">Gaji Bruto Bulanan</label>
         <NumericFormat
           placeholder="gaji bruto bulanan"
-          className="bg-slate-800 py-1 px-2 rounded-lg disabled:bg-black"
+          className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-black"
           thousandSeparator="."
           decimalSeparator=","
           prefix="Rp"
@@ -154,10 +154,10 @@ export default function Home() {
       </div>
 
       <div className="flex gap-3 items-center">
-        <label className="text-slate-300">Gaji Bruto Tahunan</label>
+        <label className="dark:text-slate-300">Gaji Bruto Tahunan</label>
         <NumericFormat
           placeholder="gaji bruto bulanan"
-          className="bg-slate-800 py-1 px-2 rounded-lg disabled:bg-black"
+          className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-black disabled:bg-slate-300"
           thousandSeparator="."
           decimalSeparator=","
           prefix="Rp"
@@ -168,9 +168,9 @@ export default function Home() {
       </div>
 
       <div className="flex gap-3 items-center">
-        <label className="text-slate-300">PTKP</label>
+        <label className="dark:text-slate-300">PTKP</label>
         <select
-          className="bg-slate-800 py-1 px-2 rounded-lg"
+          className="dark:bg-slate-800 py-1 px-2 rounded-lg"
           onChange={(v) =>
             setPtkpKey(v.target.value as keyof typeof ptkpKategori)
           }
@@ -183,7 +183,7 @@ export default function Home() {
         </select>
         <NumericFormat
           placeholder="gaji bruto bulanan"
-          className="bg-slate-800 py-1 px-2 rounded-lg disabled:bg-black"
+          className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-black disabled:bg-slate-300"
           thousandSeparator="."
           decimalSeparator=","
           prefix="Rp"
@@ -194,10 +194,10 @@ export default function Home() {
       </div>
 
       <div className="flex gap-3 items-center">
-        <label className="text-slate-300">PKP</label>
+        <label className="dark:text-slate-300">PKP</label>
         <NumericFormat
           placeholder="gaji bruto bulanan"
-          className="bg-slate-800 py-1 px-2 rounded-lg disabled:bg-black"
+          className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-black disabled:bg-slate-300"
           thousandSeparator="."
           decimalSeparator=","
           prefix="Rp"
@@ -207,7 +207,9 @@ export default function Home() {
         />
       </div>
 
-      <table className="border w-[900px]">
+      <div className="mb-4" />
+
+      <table className="w-[900px]">
         <thead>
           <tr className="py-1 px-2 text-lg border-b-2 border-slate-400">
             <th className="tpy-1 px-2 text-left">Pajak Progresif</th>
@@ -257,10 +259,10 @@ export default function Home() {
       </table>
 
       {bruto && (
-        <div>
+        <div className="mt-4">
           Sehingga bisa disimpulkan bahwa gaji bersih (netto) kamu per bulan
           sebesar {formatCurrency(Number(bruto) - pphTerutangPerbulan)}&nbsp;
-          <span className="text-slate-400">
+          <span className="dark:text-slate-400 text-slate-600">
             ({formatCurrency(Number(bruto))} -{" "}
             {formatCurrency(pphTerutangPerbulan)})
           </span>
