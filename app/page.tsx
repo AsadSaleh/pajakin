@@ -133,12 +133,11 @@ export default function Home() {
   );
   const pphTerutangPerbulan = pphTerutangPertahun / 12;
 
-  console.log({ calculatedProgressiveTaxes });
   return (
     <main className="flex min-h-screen flex-col items-center gap-4 p-24">
-      <h1 className="text-xl mb-10">
-        Pajakin: Aplikasi penghitung pajak gratis
-      </h1>
+      <div className="mb-10 text-center">
+        <h1 className="text-2xl">Pajakin: Aplikasi penghitung pajak gratis</h1>
+      </div>
 
       <div className="flex gap-3 items-center">
         <label className="dark:text-slate-300">Gaji Bruto Bulanan</label>
@@ -268,6 +267,15 @@ export default function Home() {
           </span>
         </div>
       )}
+      <p className="text-xs fixed right-2 bottom-2">
+        By{" "}
+        <a
+          href="https://twitter.com/asaduala"
+          className="hover:bg-slate-200 p-1 rounded-md dark:hover:bg-slate-800"
+        >
+          As&apos;ad Ghanim
+        </a>
+      </p>
     </main>
   );
 }
