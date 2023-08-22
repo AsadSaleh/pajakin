@@ -7,6 +7,7 @@ type ProgressiveTax = {
   batasBawah: number;
   batasAtas: number;
   persentasePajak: number;
+  label: string;
 };
 
 type PajakTerhitung = {
@@ -61,26 +62,31 @@ const progressiveTaxes: ProgressiveTax[] = [
     batasBawah: 0,
     batasAtas: 60_000_000,
     persentasePajak: 0.05,
+    label: "0 - Rp60juta",
   },
   {
     batasBawah: 60_000_000,
     batasAtas: 250_000_000,
     persentasePajak: 0.15,
+    label: "Rp60juta - Rp250juta",
   },
   {
     batasBawah: 250_000_000,
     batasAtas: 500_000_000,
     persentasePajak: 0.25,
+    label: "250juta - Rp500juta",
   },
   {
     batasBawah: 500_000_000,
     batasAtas: 5_000_000_000,
     persentasePajak: 0.3,
+    label: "500juta - Rp5M",
   },
   {
     batasBawah: 5_000_000_000,
     batasAtas: Infinity,
     persentasePajak: 0.35,
+    label: "> Rp5M",
   },
 ];
 
@@ -134,15 +140,17 @@ export default function Home() {
   const pphTerutangPerbulan = pphTerutangPertahun / 12;
 
   return (
-    <main className="flex min-h-screen flex-col items-center gap-4 p-24">
-      <div className="mb-10 text-center">
-        <h1 className="text-2xl">Pajakin: Aplikasi penghitung pajak gratis</h1>
+    <main className="flex min-h-screen w-screen flex-col items-start gap-4 p-2 pb-10 lg:p-24">
+      <div className="mb-4 mx-auto">
+        <h1 className="text-2xl text-center">
+          Pajakin: Your free to use, accurate, tax calculator
+        </h1>
       </div>
 
-      <div className="flex gap-3 items-center">
+      <div className="flex flex-col gap-1 items-start">
         <label className="dark:text-slate-300">Gaji Bruto Bulanan</label>
         <NumericFormat
-          placeholder="gaji bruto bulanan"
+          placeholder="Gaji bruto bulanan"
           className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-black"
           thousandSeparator="."
           decimalSeparator=","
@@ -152,11 +160,11 @@ export default function Home() {
         />
       </div>
 
-      <div className="flex gap-3 items-center">
+      <div className="flex flex-col gap-1 items-start">
         <label className="dark:text-slate-300">Gaji Bruto Tahunan</label>
         <NumericFormat
           placeholder="gaji bruto bulanan"
-          className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-black disabled:bg-slate-300"
+          className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-slate-900 disabled:bg-slate-300"
           thousandSeparator="."
           decimalSeparator=","
           prefix="Rp"
@@ -166,10 +174,10 @@ export default function Home() {
         />
       </div>
 
-      <div className="flex gap-3 items-center">
-        <label className="dark:text-slate-300">PTKP</label>
+      <div className="flex flex-col gap-1 items-start">
+        <label className="dark:text-slate-300">Golongan</label>
         <select
-          className="dark:bg-slate-800 py-1 px-2 rounded-lg"
+          className="dark:bg-slate-800 py-1 px-2 rounded-lg w-full"
           onChange={(v) =>
             setPtkpKey(v.target.value as keyof typeof ptkpKategori)
           }
@@ -180,9 +188,13 @@ export default function Home() {
             </option>
           ))}
         </select>
+      </div>
+
+      <div className="flex flex-col gap-1 items-start">
+        <label className="dark:text-slate-300">PTKP</label>
         <NumericFormat
           placeholder="gaji bruto bulanan"
-          className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-black disabled:bg-slate-300"
+          className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-slate-900 disabled:bg-slate-300"
           thousandSeparator="."
           decimalSeparator=","
           prefix="Rp"
@@ -192,11 +204,11 @@ export default function Home() {
         />
       </div>
 
-      <div className="flex gap-3 items-center">
+      <div className="flex flex-col gap-1 items-start">
         <label className="dark:text-slate-300">PKP</label>
         <NumericFormat
           placeholder="gaji bruto bulanan"
-          className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-black disabled:bg-slate-300"
+          className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-slate-900 disabled:bg-slate-300"
           thousandSeparator="."
           decimalSeparator=","
           prefix="Rp"
@@ -208,54 +220,61 @@ export default function Home() {
 
       <div className="mb-4" />
 
-      <table className="w-[900px]">
-        <thead>
-          <tr className="py-1 px-2 text-lg border-b-2 border-slate-400">
-            <th className="tpy-1 px-2 text-left">Pajak Progresif</th>
-            <th className="py-1 px-2">Percentage</th>
-            <th className="py-1 px-2 text-right">Besaran Kena Pajak</th>
-            <th className="py-1 px-2 text-right">PPh Terutang</th>
-          </tr>
-        </thead>
-        <tbody>
-          {calculatedProgressiveTaxes.map((calcProgTax, i) => {
-            return (
-              <tr key={i}>
-                <td className="py-1 px-2">
-                  Ceiling&nbsp;
-                  {formatCurrency(calcProgTax.batasAtas)}
-                </td>
+      <div className="w-full overflow-scroll">
+        <table className="w-[600px] md:w-full border-collapse border border-slate-500">
+          <thead>
+            <tr className="py-1 px-2 text-lg border-b-2 border-slate-400">
+              <th className="tpy-1 px-2 text-left border border-slate-600">
+                Pajak Progresif
+              </th>
+              <th className="py-1 px-2 border border-slate-600">Percentage</th>
+              <th className="py-1 px-2 text-right border border-slate-600">
+                Besaran Kena Pajak
+              </th>
+              <th className="py-1 px-2 text-right border border-slate-600">
+                PPh Terutang
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {calculatedProgressiveTaxes.map((calcProgTax, i) => {
+              return (
+                <tr key={i}>
+                  <td className="py-1 px-2 border border-slate-600">
+                    {calcProgTax.label}
+                  </td>
 
-                <td className="py-1 px-2 text-center">
-                  {calcProgTax.persentasePajak * 100}%
-                </td>
-                <td className="py-1 px-2 text-right">
-                  {formatCurrency(calcProgTax.besaranKenaPajak)}
-                </td>
-                <td className="py-1 px-2 text-right">
-                  {formatCurrency(calcProgTax.pphTerutang)}
-                </td>
-              </tr>
-            );
-          })}
-          <tr className="border-t-2 border-slate-400">
-            <td colSpan={3} className="py-1 px-2">
-              Pph Terutang per tahun
-            </td>
-            <td className="text-right py-1 px-2">
-              {formatCurrency(pphTerutangPertahun)}
-            </td>
-          </tr>
-          <tr>
-            <td colSpan={3} className="py-1 px-2">
-              PPh Terutang per bulan
-            </td>
-            <td className="text-right py-1 px-2">
-              {formatCurrency(pphTerutangPerbulan)}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                  <td className="py-1 px-2 text-center border border-slate-600">
+                    {calcProgTax.persentasePajak * 100}%
+                  </td>
+                  <td className="py-1 px-2 text-right border border-slate-600">
+                    {formatCurrency(calcProgTax.besaranKenaPajak)}
+                  </td>
+                  <td className="py-1 px-2 text-right border border-slate-600">
+                    {formatCurrency(calcProgTax.pphTerutang)}
+                  </td>
+                </tr>
+              );
+            })}
+            <tr className="border-t-2 border-slate-400">
+              <td colSpan={3} className="py-1 px-2">
+                Pph Terutang per tahun
+              </td>
+              <td className="text-right py-1 px-2">
+                {formatCurrency(pphTerutangPertahun)}
+              </td>
+            </tr>
+            <tr>
+              <td colSpan={3} className="py-1 px-2">
+                PPh Terutang per bulan
+              </td>
+              <td className="text-right py-1 px-2">
+                {formatCurrency(pphTerutangPerbulan)}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       {bruto && (
         <div className="mt-4">
@@ -267,7 +286,7 @@ export default function Home() {
           </span>
         </div>
       )}
-      <p className="text-xs fixed right-2 bottom-2">
+      <p className="text-xs fixed right-2 bottom-2 bg-black px-2 py-1 rounded-lg">
         By{" "}
         <a
           href="https://twitter.com/asaduala"
