@@ -128,9 +128,9 @@ export default function Home() {
   const [bruto, setBruto] = useState<string>();
   const [ptkpKey, setPtkpKey] = useState<keyof typeof ptkpKategori>("TK/0");
   const penghasilanBrutoTahunan = Number(bruto ?? "0") * 12;
+  const biayaJabatan = Math.min(6_000_000, penghasilanBrutoTahunan * 0.05);
   const ptkp = ptkpKategori[ptkpKey].tarif;
-  const pkp =
-    penghasilanBrutoTahunan - ptkp < 0 ? 0 : penghasilanBrutoTahunan - ptkp;
+  const pkp = Math.max(penghasilanBrutoTahunan - ptkp - biayaJabatan, 0);
   const calculatedProgressiveTaxes = calculateProgressiveTax(pkp);
 
   const pphTerutangPertahun = calculatedProgressiveTaxes.reduce(
@@ -148,9 +148,8 @@ export default function Home() {
       </div>
 
       <div className="flex flex-col gap-1 items-start">
-        <label className="dark:text-slate-300">Gaji Bruto Bulanan</label>
+        <label className="dark:text-slate-300">Gaji Bruto (per bulan)</label>
         <NumericFormat
-          placeholder="Gaji bruto bulanan"
           className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-black"
           thousandSeparator="."
           decimalSeparator=","
@@ -161,7 +160,7 @@ export default function Home() {
       </div>
 
       <div className="flex flex-col gap-1 items-start">
-        <label className="dark:text-slate-300">Gaji Bruto Tahunan</label>
+        <label className="dark:text-slate-300">Gaji Bruto (per tahun)</label>
         <NumericFormat
           placeholder="gaji bruto bulanan"
           className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-slate-900 disabled:bg-slate-300"
@@ -191,6 +190,19 @@ export default function Home() {
       </div>
 
       <div className="flex flex-col gap-1 items-start">
+        <label className="dark:text-slate-300">Biaya Jabatan (per tahun)</label>
+        <NumericFormat
+          className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-slate-900 disabled:bg-slate-300"
+          thousandSeparator="."
+          decimalSeparator=","
+          prefix="Rp"
+          value={biayaJabatan}
+          readOnly
+          disabled
+        />
+      </div>
+
+      <div className="flex flex-col gap-1 items-start">
         <label className="dark:text-slate-300">PTKP</label>
         <NumericFormat
           placeholder="gaji bruto bulanan"
@@ -205,7 +217,7 @@ export default function Home() {
       </div>
 
       <div className="flex flex-col gap-1 items-start">
-        <label className="dark:text-slate-300">PKP</label>
+        <label className="dark:text-slate-300">PKP setahun</label>
         <NumericFormat
           placeholder="gaji bruto bulanan"
           className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-slate-900 disabled:bg-slate-300"
@@ -220,6 +232,7 @@ export default function Home() {
 
       <div className="mb-4" />
 
+      {/* TABEL */}
       <div className="w-full overflow-scroll">
         <table className="w-[600px] md:w-full border-collapse border border-slate-500">
           <thead>
@@ -278,12 +291,16 @@ export default function Home() {
 
       {bruto && (
         <div className="mt-4">
-          Sehingga bisa disimpulkan bahwa gaji bersih (netto) kamu per bulan
-          sebesar {formatCurrency(Number(bruto) - pphTerutangPerbulan)}&nbsp;
-          <span className="dark:text-slate-400 text-slate-600">
-            ({formatCurrency(Number(bruto))} -{" "}
-            {formatCurrency(pphTerutangPerbulan)})
-          </span>
+          <div>Sehingga gaji bersih (netto) kamu per bulan sebesar: </div>
+          <div className="text-xl my-1">
+            {formatCurrency(Number(bruto) - pphTerutangPerbulan)}
+          </div>
+          {pphTerutangPerbulan !== 0 && (
+            <div className="dark:text-slate-400 text-slate-600">
+              ({formatCurrency(Number(bruto))} -{" "}
+              {formatCurrency(pphTerutangPerbulan)})
+            </div>
+          )}
         </div>
       )}
       <p className="text-xs fixed right-2 bottom-2 bg-black px-2 py-1 rounded-lg">
