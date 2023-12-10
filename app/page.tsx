@@ -133,7 +133,7 @@ type Income = {
 };
 
 export default function Home() {
-  const [modalState, setModalState] = useState<"closed" | "open">("open");
+  const [modalState, setModalState] = useState<"closed" | "open">("closed");
   const [incomes, setIncomes] = useState<Income[]>([
     { id: numberGen(), amount: 0, occurence: 1 },
   ]);
@@ -362,6 +362,7 @@ export default function Home() {
               decimalSeparator=","
               prefix="Rp"
               value={penghasilanBrutoTahunan}
+              disabled
               readOnly
             />
             <button
