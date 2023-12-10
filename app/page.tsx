@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { NumericFormat, numericFormatter } from "react-number-format";
+import { numberGen } from "./helpers";
 
 type ProgressiveTax = {
   batasBawah: number;
@@ -124,10 +125,32 @@ function calculateProgressiveTax(pkp: number) {
   return newArr;
 }
 
+type Income = {
+  id: number;
+  amount: number;
+  desc?: string;
+  occurence: number;
+};
+
 export default function Home() {
-  const [bruto, setBruto] = useState<string>();
+  const [modalState, setModalState] = useState<"closed" | "open">("open");
+  const [incomes, setIncomes] = useState<Income[]>([
+    { id: numberGen(), amount: 0, occurence: 1 },
+  ]);
+
+  function addNewIncomeRow() {
+    setIncomes((prev) =>
+      prev.concat({ id: numberGen(), amount: 0, occurence: 1 })
+    );
+  }
+
   const [ptkpKey, setPtkpKey] = useState<keyof typeof ptkpKategori>("TK/0");
-  const penghasilanBrutoTahunan = Number(bruto ?? "0") * 12;
+
+  // const penghasilanBrutoTahunan = Number(bruto ?? "0") * 12;
+  const penghasilanBrutoTahunan = incomes.reduce(
+    (acc, cur) => acc + cur.amount * cur.occurence,
+    0
+  );
   const biayaJabatan = Math.min(6_000_000, penghasilanBrutoTahunan * 0.05);
   const ptkp = ptkpKategori[ptkpKey].tarif;
   const pkp = Math.max(penghasilanBrutoTahunan - ptkp - biayaJabatan, 0);
@@ -140,178 +163,369 @@ export default function Home() {
   const pphTerutangPerbulan = pphTerutangPertahun / 12;
 
   return (
-    <main className="flex min-h-screen w-screen flex-col items-start gap-4 p-2 pb-10 lg:p-24">
-      <div className="mb-4 mx-auto">
-        <h1 className="text-2xl text-center">
-          Pajakin: Your free to use, accurate, tax calculator
-        </h1>
-      </div>
-
-      <div className="flex flex-col gap-1 items-start">
-        <label className="dark:text-slate-300">Gaji Bruto (per bulan)</label>
-        <NumericFormat
-          className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-black"
-          thousandSeparator="."
-          decimalSeparator=","
-          prefix="Rp"
-          value={bruto}
-          onValueChange={(e) => setBruto(e.value)}
-        />
-      </div>
-
-      <div className="flex flex-col gap-1 items-start">
-        <label className="dark:text-slate-300">Gaji Bruto (per tahun)</label>
-        <NumericFormat
-          placeholder="gaji bruto bulanan"
-          className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-slate-900 disabled:bg-slate-300"
-          thousandSeparator="."
-          decimalSeparator=","
-          prefix="Rp"
-          value={penghasilanBrutoTahunan}
-          readOnly
-          disabled
-        />
-      </div>
-
-      <div className="flex flex-col gap-1 items-start">
-        <label className="dark:text-slate-300">Golongan</label>
-        <select
-          className="dark:bg-slate-800 py-1 px-2 rounded-lg w-full"
-          onChange={(v) =>
-            setPtkpKey(v.target.value as keyof typeof ptkpKategori)
-          }
-        >
-          {Object.entries(ptkpKategori).map(([key, value]) => (
-            <option key={key} value={key}>
-              {value.desc}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className="flex flex-col gap-1 items-start">
-        <label className="dark:text-slate-300">Biaya Jabatan (per tahun)</label>
-        <NumericFormat
-          className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-slate-900 disabled:bg-slate-300"
-          thousandSeparator="."
-          decimalSeparator=","
-          prefix="Rp"
-          value={biayaJabatan}
-          readOnly
-          disabled
-        />
-      </div>
-
-      <div className="flex flex-col gap-1 items-start">
-        <label className="dark:text-slate-300">PTKP</label>
-        <NumericFormat
-          placeholder="gaji bruto bulanan"
-          className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-slate-900 disabled:bg-slate-300"
-          thousandSeparator="."
-          decimalSeparator=","
-          prefix="Rp"
-          value={ptkp}
-          readOnly
-          disabled
-        />
-      </div>
-
-      <div className="flex flex-col gap-1 items-start">
-        <label className="dark:text-slate-300">PKP setahun</label>
-        <NumericFormat
-          placeholder="gaji bruto bulanan"
-          className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-slate-900 disabled:bg-slate-300"
-          thousandSeparator="."
-          decimalSeparator=","
-          prefix="Rp"
-          value={pkp}
-          readOnly
-          disabled
-        />
-      </div>
-
-      <div className="mb-4" />
-
-      {/* TABEL */}
-      <div className="w-full overflow-scroll">
-        <table className="w-[600px] md:w-full border-collapse border border-slate-500">
-          <thead>
-            <tr className="py-1 px-2 text-lg border-b-2 border-slate-400">
-              <th className="tpy-1 px-2 text-left border border-slate-600">
-                Pajak Progresif
-              </th>
-              <th className="py-1 px-2 border border-slate-600">Percentage</th>
-              <th className="py-1 px-2 text-right border border-slate-600">
-                Besaran Kena Pajak
-              </th>
-              <th className="py-1 px-2 text-right border border-slate-600">
-                PPh Terutang
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {calculatedProgressiveTaxes.map((calcProgTax, i) => {
-              return (
-                <tr key={i}>
-                  <td className="py-1 px-2 border border-slate-600">
-                    {calcProgTax.label}
-                  </td>
-
-                  <td className="py-1 px-2 text-center border border-slate-600">
-                    {calcProgTax.persentasePajak * 100}%
-                  </td>
-                  <td className="py-1 px-2 text-right border border-slate-600">
-                    {formatCurrency(calcProgTax.besaranKenaPajak)}
-                  </td>
-                  <td className="py-1 px-2 text-right border border-slate-600">
-                    {formatCurrency(calcProgTax.pphTerutang)}
+    <main className="">
+      {/* Modal start */}
+      <div
+        className={`fixed bg-slate-700 z-10 h-screen top-0 right-0 p-4 w-screen md:w-[500px] lg:w-[700px] transition ease-in-out duration-300 ${
+          modalState === "open"
+            ? "translate-x-0"
+            : "translate-x-full md:translate-x-[500px] lg:translate-x-[700px]"
+        }`}
+      >
+        <div className="flex items-center justify-between">
+          <h4 className="text-2xl">Input Penghasilan</h4>
+          <button
+            type="button"
+            onClick={() => setModalState("closed")}
+            className="bg-slate-800 rounded-md active:scale-90 transition"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-8 h-8"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+        <div className="mt-4">
+          <div className="w-full overflow-scroll">
+            <table className="border-collapse border border-slate-500 w-full">
+              <thead>
+                <tr>
+                  <th>Nominal</th>
+                  <th>Pengali</th>
+                  <th>Keterangan</th>
+                  <th>Subtotal</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {incomes.map((income, idx) => (
+                  <tr key={income.id}>
+                    <td>
+                      <NumericFormat
+                        className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-black text-right"
+                        thousandSeparator="."
+                        decimalSeparator=","
+                        prefix="Rp"
+                        value={income.amount}
+                        autoFocus={true}
+                        onValueChange={(e) =>
+                          setIncomes((prev) =>
+                            prev.map((prevIncome) =>
+                              prevIncome.id === income.id
+                                ? { ...prevIncome, amount: e.floatValue ?? 0 }
+                                : prevIncome
+                            )
+                          )
+                        }
+                      />
+                    </td>
+                    <td>
+                      <input
+                        className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-black w-20"
+                        value={income.occurence}
+                        onChange={(e) => {
+                          setIncomes((prev) =>
+                            prev.map((prevIncome) =>
+                              prevIncome.id === income.id
+                                ? {
+                                    ...prevIncome,
+                                    occurence: Number(e.target.value) ?? 0,
+                                  }
+                                : prevIncome
+                            )
+                          );
+                        }}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-black w-24"
+                        value={income.desc}
+                        onChange={() => {}}
+                      />
+                    </td>
+                    <td>
+                      <NumericFormat
+                        className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-slate-900 disabled:bg-slate-300 text-right"
+                        thousandSeparator="."
+                        decimalSeparator=","
+                        prefix="Rp"
+                        value={income.amount * income.occurence}
+                        readOnly
+                        disabled
+                      />
+                    </td>
+                    <td>
+                      <button
+                        className="italic text-sm text-red-400 text-center px-1"
+                        onClick={() =>
+                          setIncomes((prev) => {
+                            if (prev.length === 1) {
+                              return [
+                                { id: numberGen(), amount: 0, occurence: 1 },
+                              ];
+                            }
+                            return prev.filter(
+                              (prevIncome) => prevIncome.id !== income.id
+                            );
+                          })
+                        }
+                      >
+                        {incomes.length === 1 ? "clear" : "hapus"}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+                <tr>
+                  <td colSpan={4} className="pr-[10px]">
+                    <button
+                      type="button"
+                      onClick={addNewIncomeRow}
+                      className="bg-slate-800 italic text-sm hover:bg-opacity-70 rounded-md active:scale-95 transition w-full"
+                    >
+                      Baris Baru +
+                    </button>
                   </td>
                 </tr>
-              );
-            })}
-            <tr className="border-t-2 border-slate-400">
-              <td colSpan={3} className="py-1 px-2">
-                Pph Terutang per tahun
-              </td>
-              <td className="text-right py-1 px-2">
-                {formatCurrency(pphTerutangPertahun)}
-              </td>
-            </tr>
-            <tr>
-              <td colSpan={3} className="py-1 px-2">
-                PPh Terutang per bulan
-              </td>
-              <td className="text-right py-1 px-2">
-                {formatCurrency(pphTerutangPerbulan)}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      {bruto && (
-        <div className="mt-4">
-          <div>Sehingga gaji bersih (netto) kamu per bulan sebesar: </div>
-          <div className="text-xl my-1">
-            {formatCurrency(Number(bruto) - pphTerutangPerbulan)}
+                <tr>
+                  <td colSpan={3} className="text-right">
+                    Total
+                  </td>
+                  <td>
+                    <NumericFormat
+                      className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-slate-900 disabled:bg-slate-300 text-right"
+                      thousandSeparator="."
+                      decimalSeparator=","
+                      prefix="Rp"
+                      value={incomes.reduce(
+                        (acc, cur) => acc + cur.amount * cur.occurence,
+                        0
+                      )}
+                      readOnly
+                      disabled
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          {pphTerutangPerbulan !== 0 && (
-            <div className="dark:text-slate-400 text-slate-600">
-              ({formatCurrency(Number(bruto))} -{" "}
-              {formatCurrency(pphTerutangPerbulan)})
-            </div>
-          )}
+          <div className="mt-4 flex justify-end">
+            <button
+              type="button"
+              className="bg-green-700 px-4 py-2 rounded-md active:scale-90 transition"
+              onClick={() => setModalState("closed")}
+            >
+              Simpan dan Tutup
+            </button>
+          </div>
         </div>
-      )}
-      <p className="text-xs fixed right-2 bottom-2 bg-black px-2 py-1 rounded-lg">
-        By{" "}
-        <a
-          href="https://twitter.com/asaduala"
-          className="hover:bg-slate-200 p-1 rounded-md dark:hover:bg-slate-800"
-        >
-          As&apos;ad Ghanim
-        </a>
-      </p>
+      </div>
+      {/* Modal end */}
+      <div className="flex relative flex-col items-start gap-4 p-2 pb-20 lg:px-24 lg:py-10">
+        <div className="mb-4 mx-auto">
+          <h1 className="text-3xl text-center">Pajakin</h1>
+          <h4 className="text-xl mt-4">
+            Kalkulator penghitung pajak progresif PPh 21 pekerja Indonesia
+          </h4>
+        </div>
+
+        {/* <div className="flex flex-col gap-1 items-start">
+          <label className="dark:text-slate-300">Gaji Bruto (per bulan)</label>
+          <NumericFormat
+            className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-black"
+            thousandSeparator="."
+            decimalSeparator=","
+            prefix="Rp"
+            value={bruto}
+            onValueChange={(e) => setBruto(e.value)}
+          />
+        </div> */}
+
+        <div className="flex flex-col gap-1 items-start">
+          <label className="dark:text-slate-300">
+            Penghasilan Bruto per Tahun
+          </label>
+          <div className="flex items-center justify-start gap-2">
+            <NumericFormat
+              className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-slate-900 disabled:bg-slate-300"
+              thousandSeparator="."
+              decimalSeparator=","
+              prefix="Rp"
+              value={penghasilanBrutoTahunan}
+              readOnly
+            />
+            <button
+              onClick={() => setModalState("open")}
+              className="w-[30px] h-[30px] flex items-center justify-center bg-slate-700 rounded-md active:scale-90 transition"
+              type="button"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V13.5zm0 2.25h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V18zm2.498-6.75h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V13.5zm0 2.25h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V18zm2.504-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zm0 2.25h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V18zm2.498-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zM8.25 6h7.5v2.25h-7.5V6zM12 2.25c-1.892 0-3.758.11-5.593.322C5.307 2.7 4.5 3.65 4.5 4.757V19.5a2.25 2.25 0 002.25 2.25h10.5a2.25 2.25 0 002.25-2.25V4.757c0-1.108-.806-2.057-1.907-2.185A48.507 48.507 0 0012 2.25z"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-1 items-start">
+          <label className="dark:text-slate-300">Golongan</label>
+          <select
+            className="dark:bg-slate-800 py-1 px-2 rounded-lg w-full"
+            onChange={(v) =>
+              setPtkpKey(v.target.value as keyof typeof ptkpKategori)
+            }
+          >
+            {Object.entries(ptkpKategori).map(([key, value]) => (
+              <option key={key} value={key}>
+                {value.desc}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="flex flex-col gap-1 items-start">
+          <label className="dark:text-slate-300">
+            Biaya Jabatan (per tahun)
+          </label>
+          <NumericFormat
+            className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-slate-900 disabled:bg-slate-300"
+            thousandSeparator="."
+            decimalSeparator=","
+            prefix="Rp"
+            value={biayaJabatan}
+            readOnly
+            disabled
+          />
+        </div>
+
+        <div className="flex flex-col gap-1 items-start">
+          <label className="dark:text-slate-300">PTKP</label>
+          <NumericFormat
+            className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-slate-900 disabled:bg-slate-300"
+            thousandSeparator="."
+            decimalSeparator=","
+            prefix="Rp"
+            value={ptkp}
+            readOnly
+            disabled
+          />
+        </div>
+
+        <div className="flex flex-col gap-1 items-start">
+          <label className="dark:text-slate-300">PKP setahun</label>
+          <NumericFormat
+            className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-slate-900 disabled:bg-slate-300"
+            thousandSeparator="."
+            decimalSeparator=","
+            prefix="Rp"
+            value={pkp}
+            readOnly
+            disabled
+          />
+        </div>
+
+        <div className="mb-4" />
+
+        {/* TABEL */}
+        <div className="w-full overflow-scroll">
+          <table className="w-[600px] md:w-full border-collapse border border-slate-500">
+            <thead>
+              <tr className="py-1 px-2 text-lg border-b-2 border-slate-400">
+                <th className="tpy-1 px-2 text-left border border-slate-600">
+                  Pajak Progresif
+                </th>
+                <th className="py-1 px-2 border border-slate-600">
+                  Percentage
+                </th>
+                <th className="py-1 px-2 text-right border border-slate-600">
+                  Besaran Kena Pajak
+                </th>
+                <th className="py-1 px-2 text-right border border-slate-600">
+                  PPh Terutang
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {calculatedProgressiveTaxes.map((calcProgTax, i) => {
+                return (
+                  <tr key={i}>
+                    <td className="py-1 px-2 border border-slate-600">
+                      {calcProgTax.label}
+                    </td>
+
+                    <td className="py-1 px-2 text-center border border-slate-600">
+                      {calcProgTax.persentasePajak * 100}%
+                    </td>
+                    <td className="py-1 px-2 text-right border border-slate-600">
+                      {formatCurrency(calcProgTax.besaranKenaPajak)}
+                    </td>
+                    <td className="py-1 px-2 text-right border border-slate-600">
+                      {formatCurrency(calcProgTax.pphTerutang)}
+                    </td>
+                  </tr>
+                );
+              })}
+              <tr className="border-t-2  border-slate-400">
+                <td colSpan={3} className="py-1 px-2 text-right">
+                  Pph Terutang per tahun
+                </td>
+                <td className="text-right py-1 px-2">
+                  {formatCurrency(pphTerutangPertahun)}
+                </td>
+              </tr>
+              <tr>
+                <td colSpan={3} className="py-1 px-2 text-right">
+                  PPh Terutang per bulan
+                </td>
+                <td className="text-right py-1 px-2">
+                  {formatCurrency(pphTerutangPerbulan)}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        {penghasilanBrutoTahunan ? (
+          <div className="mt-4">
+            <h4 className="">Kesimpulan:</h4>
+            <div className="text-xl mt-2">
+              Pajak yang mesti dibayarkan per tahun adalah sebesar
+            </div>
+            <div className="text-xl my-1">
+              {formatCurrency(pphTerutangPertahun)}
+            </div>
+          </div>
+        ) : null}
+        <p className="text-xs fixed right-2 bottom-2 bg-black px-2 py-1 rounded-lg">
+          By{" "}
+          <a
+            href="https://twitter.com/asaduala"
+            className="hover:bg-slate-200 p-1 rounded-md dark:hover:bg-slate-800"
+          >
+            As&apos;ad Ghanim
+          </a>
+        </p>
+      </div>
     </main>
   );
 }

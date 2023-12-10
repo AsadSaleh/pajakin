@@ -5,8 +5,8 @@ import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Pajakin",
-  description: "Your free to use, accurate, tax calculator",
+  title: "Pajakin - Kalkulator pajak",
+  description: "Kalkulator penghitung pajak progresif PPh 21 pekerja Indonesia",
 };
 
 export default function RootLayout({
