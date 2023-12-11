@@ -197,27 +197,28 @@ export default function Home() {
         </div>
         <div className="mt-4">
           <div className="w-full overflow-scroll">
-            <table className="border-collapse border border-slate-500 w-full">
+            <table className="border border-collapse border-slate-500 w-full">
               <thead>
                 <tr>
-                  <th>Nominal</th>
-                  <th>Pengali</th>
-                  <th>Keterangan</th>
-                  <th>Subtotal</th>
-                  <th></th>
+                  <th className="border border-slate-600 rounded-tl-md">
+                    Nominal
+                  </th>
+                  <th className="border border-slate-600">Pengali</th>
+                  <th className="border border-slate-600">Keterangan</th>
+                  <th className="border border-slate-600">Subtotal</th>
+                  <th className="border border-slate-600"></th>
                 </tr>
               </thead>
               <tbody>
-                {incomes.map((income, idx) => (
+                {incomes.map((income) => (
                   <tr key={income.id}>
-                    <td>
+                    <td className="border border-slate-600 p-1">
                       <NumericFormat
-                        className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-black text-right"
+                        className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-black text-right w-40"
                         thousandSeparator="."
                         decimalSeparator=","
                         prefix="Rp"
                         value={income.amount}
-                        autoFocus={true}
                         onValueChange={(e) =>
                           setIncomes((prev) =>
                             prev.map((prevIncome) =>
@@ -229,7 +230,7 @@ export default function Home() {
                         }
                       />
                     </td>
-                    <td>
+                    <td className="border border-slate-600 p-1">
                       <input
                         className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-black w-20"
                         value={income.occurence}
@@ -247,14 +248,14 @@ export default function Home() {
                         }}
                       />
                     </td>
-                    <td>
+                    <td className="border border-slate-600 p-1">
                       <input
                         className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-black w-24"
                         value={income.desc}
                         onChange={() => {}}
                       />
                     </td>
-                    <td>
+                    <td className="border border-slate-600 p-1">
                       <NumericFormat
                         className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-slate-900 disabled:bg-slate-300 text-right"
                         thousandSeparator="."
@@ -265,9 +266,9 @@ export default function Home() {
                         disabled
                       />
                     </td>
-                    <td>
+                    <td className="border border-slate-600 p-1">
                       <button
-                        className="italic text-sm text-red-400 text-center px-1"
+                        className="text-sm text-red-400 text-center px-1 active:scale-90 transition"
                         onClick={() =>
                           setIncomes((prev) => {
                             if (prev.length === 1) {
@@ -281,17 +282,17 @@ export default function Home() {
                           })
                         }
                       >
-                        {incomes.length === 1 ? "clear" : "hapus"}
+                        hapus
                       </button>
                     </td>
                   </tr>
                 ))}
                 <tr>
-                  <td colSpan={4} className="pr-[10px]">
+                  <td colSpan={5} className="px-1">
                     <button
                       type="button"
                       onClick={addNewIncomeRow}
-                      className="bg-slate-800 italic text-sm hover:bg-opacity-70 rounded-md active:scale-95 transition w-full"
+                      className="bg-slate-800 text-slate-400 hover:text-white italic text-sm hover:bg-opacity-70 rounded-md active:scale-95 transition w-full"
                     >
                       Baris Baru +
                     </button>
@@ -420,7 +421,7 @@ export default function Home() {
         </div>
 
         <div className="flex flex-col gap-1 items-start">
-          <label className="dark:text-slate-300">PTKP</label>
+          <label className="dark:text-slate-300">PTKP Setahun</label>
           <NumericFormat
             className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-slate-900 disabled:bg-slate-300"
             thousandSeparator="."
@@ -433,7 +434,9 @@ export default function Home() {
         </div>
 
         <div className="flex flex-col gap-1 items-start">
-          <label className="dark:text-slate-300">PKP setahun</label>
+          <label className="dark:text-slate-300">
+            Penghasilan Kena Pajak Setahun
+          </label>
           <NumericFormat
             className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-slate-900 disabled:bg-slate-300"
             thousandSeparator="."
@@ -451,17 +454,17 @@ export default function Home() {
         <div className="w-full overflow-scroll">
           <table className="w-[600px] md:w-full border-collapse border border-slate-500">
             <thead>
-              <tr className="py-1 px-2 text-lg border-b-2 border-slate-400">
-                <th className="tpy-1 px-2 text-left border border-slate-600">
+              <tr className="text-lg border-b-2 border-slate-400">
+                <th className="p-3 bg-slate-800 text-left border border-slate-600">
                   Pajak Progresif
                 </th>
-                <th className="py-1 px-2 border border-slate-600">
+                <th className="p-3 bg-slate-800 border border-slate-600">
                   Percentage
                 </th>
-                <th className="py-1 px-2 text-right border border-slate-600">
+                <th className="p-3 bg-slate-800 text-right border border-slate-600">
                   Besaran Kena Pajak
                 </th>
-                <th className="py-1 px-2 text-right border border-slate-600">
+                <th className="p-3 bg-slate-800 text-right border border-slate-600">
                   PPh Terutang
                 </th>
               </tr>
@@ -470,35 +473,35 @@ export default function Home() {
               {calculatedProgressiveTaxes.map((calcProgTax, i) => {
                 return (
                   <tr key={i}>
-                    <td className="py-1 px-2 border border-slate-600">
+                    <td className="px-4 py-3 border border-slate-600">
                       {calcProgTax.label}
                     </td>
 
-                    <td className="py-1 px-2 text-center border border-slate-600">
+                    <td className="px-4 py-3 text-center border border-slate-600">
                       {calcProgTax.persentasePajak * 100}%
                     </td>
-                    <td className="py-1 px-2 text-right border border-slate-600">
+                    <td className="px-4 py-3 text-right border border-slate-600">
                       {formatCurrency(calcProgTax.besaranKenaPajak)}
                     </td>
-                    <td className="py-1 px-2 text-right border border-slate-600">
+                    <td className="px-4 py-3 text-right border border-slate-600">
                       {formatCurrency(calcProgTax.pphTerutang)}
                     </td>
                   </tr>
                 );
               })}
-              <tr className="border-t-2  border-slate-400">
-                <td colSpan={3} className="py-1 px-2 text-right">
+              <tr className="border-t-2 border-slate-400">
+                <td colSpan={3} className="px-4 py-2 text-right">
                   Pph Terutang per tahun
                 </td>
-                <td className="text-right py-1 px-2">
+                <td className="text-right px-4 py-2">
                   {formatCurrency(pphTerutangPertahun)}
                 </td>
               </tr>
               <tr>
-                <td colSpan={3} className="py-1 px-2 text-right">
+                <td colSpan={3} className="px-4 py-2 text-right">
                   PPh Terutang per bulan
                 </td>
-                <td className="text-right py-1 px-2">
+                <td className="text-right px-4 py-2">
                   {formatCurrency(pphTerutangPerbulan)}
                 </td>
               </tr>
@@ -508,15 +511,17 @@ export default function Home() {
 
         {penghasilanBrutoTahunan ? (
           <div className="mt-4">
-            <h4 className="">Kesimpulan:</h4>
+            <h4 className="">Kesimpulan</h4>
             <div className="text-xl mt-2">
-              Pajak yang mesti dibayarkan per tahun adalah sebesar
+              Pajak yang mesti dibayarkan per tahun adalah sebesar:
             </div>
             <div className="text-xl my-1">
               {formatCurrency(pphTerutangPertahun)}
             </div>
           </div>
-        ) : null}
+        ) : (
+          <div className="h-8" />
+        )}
         <p className="text-xs fixed right-2 bottom-2 bg-black px-2 py-1 rounded-lg">
           By{" "}
           <a
