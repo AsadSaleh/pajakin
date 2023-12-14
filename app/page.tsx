@@ -129,18 +129,18 @@ type Income = {
   id: number;
   amount: number;
   desc?: string;
-  occurence: number;
+  occurence: string;
 };
 
 export default function Home() {
   const [modalState, setModalState] = useState<"closed" | "open">("closed");
   const [incomes, setIncomes] = useState<Income[]>([
-    { id: numberGen(), amount: 0, occurence: 1 },
+    { id: numberGen(), amount: 0, occurence: "1" },
   ]);
 
   function addNewIncomeRow() {
     setIncomes((prev) =>
-      prev.concat({ id: numberGen(), amount: 0, occurence: 1 })
+      prev.concat({ id: numberGen(), amount: 0, occurence: "1" })
     );
   }
 
@@ -148,7 +148,7 @@ export default function Home() {
 
   // const penghasilanBrutoTahunan = Number(bruto ?? "0") * 12;
   const penghasilanBrutoTahunan = incomes.reduce(
-    (acc, cur) => acc + cur.amount * cur.occurence,
+    (acc, cur) => acc + cur.amount * Number(cur.occurence),
     0
   );
   const biayaJabatan = Math.min(6_000_000, penghasilanBrutoTahunan * 0.05);
@@ -240,7 +240,7 @@ export default function Home() {
                               prevIncome.id === income.id
                                 ? {
                                     ...prevIncome,
-                                    occurence: Number(e.target.value) ?? 0,
+                                    occurence: e.target.value,
                                   }
                                 : prevIncome
                             )
@@ -261,7 +261,7 @@ export default function Home() {
                         thousandSeparator="."
                         decimalSeparator=","
                         prefix="Rp"
-                        value={income.amount * income.occurence}
+                        value={income.amount * Number(income.occurence)}
                         readOnly
                         disabled
                       />
@@ -273,7 +273,7 @@ export default function Home() {
                           setIncomes((prev) => {
                             if (prev.length === 1) {
                               return [
-                                { id: numberGen(), amount: 0, occurence: 1 },
+                                { id: numberGen(), amount: 0, occurence: "1" },
                               ];
                             }
                             return prev.filter(
@@ -309,7 +309,7 @@ export default function Home() {
                       decimalSeparator=","
                       prefix="Rp"
                       value={incomes.reduce(
-                        (acc, cur) => acc + cur.amount * cur.occurence,
+                        (acc, cur) => acc + cur.amount * Number(cur.occurence),
                         0
                       )}
                       readOnly
