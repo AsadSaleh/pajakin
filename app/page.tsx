@@ -390,6 +390,21 @@ export default function Home() {
         </div>
 
         <div className="flex flex-col gap-1 items-start">
+          <label className="dark:text-slate-300">
+            Biaya Jabatan (per tahun)
+          </label>
+          <NumericFormat
+            className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-slate-900 disabled:bg-slate-300"
+            thousandSeparator="."
+            decimalSeparator=","
+            prefix="Rp"
+            value={biayaJabatan}
+            readOnly
+            disabled
+          />
+        </div>
+
+        <div className="flex flex-col gap-1 items-start">
           <label className="dark:text-slate-300">Golongan</label>
           <select
             className="dark:bg-slate-800 py-1 px-2 rounded-lg w-full"
@@ -403,21 +418,6 @@ export default function Home() {
               </option>
             ))}
           </select>
-        </div>
-
-        <div className="flex flex-col gap-1 items-start">
-          <label className="dark:text-slate-300">
-            Biaya Jabatan (per tahun)
-          </label>
-          <NumericFormat
-            className="dark:bg-slate-800 py-1 px-2 rounded-lg dark:disabled:bg-slate-900 disabled:bg-slate-300"
-            thousandSeparator="."
-            decimalSeparator=","
-            prefix="Rp"
-            value={biayaJabatan}
-            readOnly
-            disabled
-          />
         </div>
 
         <div className="flex flex-col gap-1 items-start">
