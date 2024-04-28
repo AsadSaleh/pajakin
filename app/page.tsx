@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { NumericFormat, numericFormatter } from "react-number-format";
 import { numberGen } from "./helpers";
+import { Metadata } from "next";
 
 type ProgressiveTax = {
   batasBawah: number;
@@ -130,6 +131,11 @@ type Income = {
   amount: number;
   desc?: string;
   occurence: string;
+};
+
+export const meta: Metadata = {
+  title: "Pajakin",
+  description: "Kalkulator pajak progresif PPh 21 pekerja Indonesia",
 };
 
 export default function Home() {
