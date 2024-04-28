@@ -133,7 +133,7 @@ type Income = {
   occurence: string;
 };
 
-export const meta: Metadata = {
+export const metadata: Metadata = {
   title: "Pajakin",
   description: "Kalkulator pajak progresif PPh 21 pekerja Indonesia",
 };
