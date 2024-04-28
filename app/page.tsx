@@ -457,7 +457,7 @@ export default function Home() {
                       </td>
                       <td className="border border-slate-600 p-1">
                         <NumericFormat
-                          className="bg-slate-800 py-1 px-2 rounded-lg disabled:bg-slate-900 disabled:bg-slate-300 text-right"
+                          className="bg-slate-800 py-1 px-2 rounded-lg disabled:bg-slate-900 text-right"
                           thousandSeparator="."
                           decimalSeparator=","
                           prefix="Rp"
