@@ -586,7 +586,7 @@ export default function Home() {
         disabled
       />
 
-      <p className="mt-3 text-slate-300">Penghasilan Netto setahun</p>
+      <p className="mt-3 text-slate-300">Penghasilan netto setahun</p>
       <p className="text-sm text-slate-400">
         (Penghasilan bruto setahun - Komponen pengurang setahun)
       </p>
@@ -618,7 +618,7 @@ export default function Home() {
 
       <p className="mt-3 text-slate-300">Penghasilan kena pajak setahun</p>
       <p className="text-sm text-slate-400">
-        (Penghasilan Netto setahun - PTKP)
+        (Penghasilan netto setahun - PTKP)
       </p>
       <NumericFormat
         className="mt-1 bg-slate-800 py-1 px-2 rounded-lg disabled:bg-slate-900"
