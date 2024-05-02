@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { NumericFormat, numericFormatter } from "react-number-format";
 import { numberGen } from "./helpers";
-import { Metadata } from "next";
 
 type ProgressiveTax = {
   batasBawah: number;
@@ -133,11 +132,6 @@ type Income = {
   occurence: string;
 };
 
-export const metadata: Metadata = {
-  title: "Pajakin",
-  description: "Kalkulator pajak progresif PPh 21 pekerja Indonesia",
-};
-
 export default function Home() {
   const [modalState, setModalState] = useState<"closed" | "open">("closed");
   const [incomes, setIncomes] = useState<Income[]>([
@@ -208,7 +202,7 @@ export default function Home() {
       <p className="mt-2 text-slate-300">1. Masukan penghasilan</p>
       <button
         onClick={() => setModalState("open")}
-        className="px-4 py-2 flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-800 rounded-lg active:scale-90 transition"
+        className="px-4 py-2.5 flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 rounded-lg active:scale-95 transition"
         type="button"
       >
         <svg
@@ -230,7 +224,7 @@ export default function Home() {
 
       {/* Modal start */}
       <div
-        className={`fixed bg-slate-700 z-10 h-screen top-0 right-0 p-4 w-screen md:w-[500px] lg:w-[700px] transition ease-in-out duration-300 ${
+        className={`fixed bg-slate-700 z-10 h-screen top-0 right-0 p-4 w-screen md:w-[500px] lg:w-[700px] transition ease-in-out duration-300 overflow-y-scroll overscroll-contain ${
           modalState === "open"
             ? "translate-x-0"
             : "translate-x-full md:translate-x-[500px] lg:translate-x-[700px]"
@@ -548,9 +542,9 @@ export default function Home() {
       </div>
       {/* Modal end */}
 
-      <p className="mt-2 text-slate-300">2. Pilih Golongan</p>
+      <p className="mt-3 text-slate-300">2. Pilih Golongan</p>
       <select
-        className="bg-slate-700 hover:bg-slate-800 py-2 px-4 rounded-lg w-full transition-colors min-w-min"
+        className="bg-slate-700 hover:bg-slate-600 py-3 px-4 rounded-lg w-full transition-colors min-w-min cursor-pointer"
         onChange={(v) =>
           setPtkpKey(v.target.value as keyof typeof ptkpKategori)
         }
@@ -575,7 +569,7 @@ export default function Home() {
         readOnly
       />
 
-      <p className="mt-3 text-slate-300">Komponen pengurang setahun</p>
+      <p className="mt-4 text-slate-300">Komponen pengurang setahun</p>
       <NumericFormat
         className="bg-slate-800 py-1 px-2 rounded-lg disabled:bg-slate-900"
         thousandSeparator="."
@@ -586,7 +580,7 @@ export default function Home() {
         disabled
       />
 
-      <p className="mt-3 text-slate-300">Penghasilan netto setahun</p>
+      <p className="mt-4 text-slate-300">Penghasilan netto setahun</p>
       <p className="text-sm text-slate-400">
         (Penghasilan bruto setahun - Komponen pengurang setahun)
       </p>
@@ -600,7 +594,7 @@ export default function Home() {
         disabled
       />
 
-      <p className="mt-3 text-slate-300">
+      <p className="mt-4 text-slate-300">
         Penghasilan Tidak Kena Pajak (PTKP) setahun
       </p>
       <p className="text-sm text-slate-400">
@@ -616,7 +610,7 @@ export default function Home() {
         disabled
       />
 
-      <p className="mt-3 text-slate-300">Penghasilan kena pajak setahun</p>
+      <p className="mt-4 text-slate-300">Penghasilan kena pajak setahun</p>
       <p className="text-sm text-slate-400">
         (Penghasilan netto setahun - PTKP)
       </p>
@@ -636,10 +630,10 @@ export default function Home() {
           <thead>
             <tr className="text-lg border-b-2 border-slate-400">
               <th className="p-3 bg-slate-800 text-left border border-slate-600">
-                Pajak Progresif
+                Range Pajak Progresif
               </th>
               <th className="p-3 bg-slate-800 border border-slate-600">
-                Percentage
+                Persentase
               </th>
               <th className="p-3 bg-slate-800 text-right border border-slate-600">
                 Besaran Kena Pajak
@@ -690,22 +684,30 @@ export default function Home() {
       </div>
 
       {penghasilanBrutoTahunan ? (
-        <div className="mt-4">
-          <h4 className="">Kesimpulan</h4>
-          <div className="text-xl mt-2">
-            Pajak yang mesti dibayarkan per tahun adalah sebesar:
-          </div>
-          <div className="text-xl my-1">
-            {formatCurrency(pphTerutangPertahun)}
-          </div>
-        </div>
+        <>
+          <h3 className="mt-10 text-xl">Kesimpulan</h3>
+
+          <p className="mt-3 text-slate-300 text-lg">
+            Pajak yang mesti dibayarkan per tahun adalah sebesar:{" "}
+            <span className="text-slate-200">
+              {formatCurrency(pphTerutangPertahun)}
+            </span>
+          </p>
+
+          <p className="text-slate-300 text-lg">
+            Atau per bulan sebesar:{" "}
+            <span className="text-slate-200 text-xl">
+              {formatCurrency(pphTerutangPerbulan)}
+            </span>
+          </p>
+        </>
       ) : (
         <div className="h-8" />
       )}
       <p className="text-xs fixed right-2 bottom-2 bg-black px-2 py-1 rounded-lg">
         By{" "}
         <a
-          href="https://twitter.com/asaduala"
+          href="https://asadghanim.vercel.app"
           className="p-1 rounded-md bg-slate-700 hover:bg-slate-800 transition-colors"
         >
           As&apos;ad Ghanim
