@@ -704,15 +704,17 @@ export default function Home() {
       ) : (
         <div className="h-8" />
       )}
-      <p className="text-xs fixed right-2 bottom-2 bg-black px-2 py-1 rounded-lg">
-        By{" "}
+
+      <footer className="fixed right-2 bottom-2">
         <a
           href="https://asadghanim.vercel.app"
-          className="p-1 rounded-md bg-slate-700 hover:bg-slate-800 transition-colors"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-slate-600 hover:bg-slate-500 transition-all p-1 rounded-md text-xs"
         >
-          As&apos;ad Ghanim
+          By As&apos;ad Ghanim
         </a>
-      </p>
+      </footer>
     </main>
   );
 }
