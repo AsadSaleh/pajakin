@@ -544,7 +544,7 @@ export default function Home() {
 
       <p className="mt-3 text-slate-300">2. Pilih Golongan</p>
       <select
-        className="bg-slate-700 hover:bg-slate-600 py-3 px-4 rounded-lg w-full transition-colors min-w-min cursor-pointer"
+        className="bg-slate-700 hover:bg-slate-600 py-3 px-4 rounded-lg transition-colors min-w-min cursor-pointer"
         onChange={(v) =>
           setPtkpKey(v.target.value as keyof typeof ptkpKategori)
         }
