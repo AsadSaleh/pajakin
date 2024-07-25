@@ -269,6 +269,10 @@ export default function Home() {
         </div>
         <div className="mt-4">
           <div className="w-full overflow-scroll">
+            <p className="text-sm text-slate-400">
+              Komponen biaya yang menambah pajak contohnya: Gaji bulanan, komisi
+              penjualan, THR, bonus, dan sejenisnya.
+            </p>
             <table className="w-full border-collapse border border-slate-500">
               <thead>
                 <tr>
