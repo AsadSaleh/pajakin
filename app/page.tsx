@@ -241,7 +241,7 @@ export default function Home() {
       {/* Modal start */}
       <div
         data-shown={modalState === "open"}
-        className={`fixed right-0 top-0 z-10 h-screen w-screen translate-x-full overflow-y-scroll overscroll-contain bg-slate-700 p-4 transition duration-300 ease-in-out data-[shown=true]:translate-x-0 md:w-[500px] md:translate-x-[500px] lg:w-[700px] lg:translate-x-[700px]`}
+        className={`fixed -right-[calc(100%)] top-0 z-10 h-screen w-screen overflow-y-scroll overscroll-contain bg-slate-700 p-4 transition-all duration-300 ease-in-out data-[shown=true]:right-0 md:right-[-500px] md:w-[500px] lg:right-[-700px] lg:w-[700px]`}
       >
         <div className="flex items-center justify-between">
           <h4 className="text-2xl">Input Penghasilan</h4>
