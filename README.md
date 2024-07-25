@@ -1,34 +1,28 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Pajakin
 
-## Getting Started
+<div style="display:flex">
+<img alt="Pajakin Landing Page" src="https://pajakin.vercel.app/images/pajakin_main.png">
+</div>
 
-First, run the development server:
+[ LIVE WEBSITE (https://pajakin.vercel.app) ](https://pajakin.vercel.app/)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+🇮🇩 Kalkulator penghitung pajak progresif PPh 21 pekerja Indonesia
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+🇺🇸 Tax calculator (PPh21) for Indonesian workers
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Fitur
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+1. Hitung pajak menggunakan sistem progresif PPh21
+2. Calculator praktis untuk memasukkan pemasukan dan pengeluaran
+3. Pilih golongan untuk menentukan potongan pajak
+4. Lihat pajak total yang telah dihitung
 
-## Learn More
+## Kontribusi
 
-To learn more about Next.js, take a look at the following resources:
+Saya menggunakan [Next.js](https://nextjs.org/). Untuk kontribusi, silahkan running di lokal dengan cara fork, lalu clone, install npm dependencies, lalu run development server. Buat perubahan lalu submit pull-request di GitHub.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Other Images
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+<img alt="Pajakin di HP" src="https://pajakin.vercel.app/images/mobile_main.png">
+<img alt="Pajakin di HP" src="https://pajakin.vercel.app/images/mobile_sidepanel.png">
+<img alt="Pajakin di HP" src="https://pajakin.vercel.app/images/pajakin_main.png">
