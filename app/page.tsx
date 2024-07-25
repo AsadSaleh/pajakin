@@ -158,13 +158,13 @@ export default function Home() {
 
   function addNewIncomeRow() {
     setIncomes((prev) =>
-      prev.concat({ id: numberGen(), amount: 0, occurence: "1" })
+      prev.concat({ id: numberGen(), amount: 0, occurence: "1" }),
     );
   }
 
   function addNewOutcomeRow() {
     setOutcomes((prev) =>
-      prev.concat({ id: numberGen(), amount: 0, occurence: "1" })
+      prev.concat({ id: numberGen(), amount: 0, occurence: "1" }),
     );
   }
 
@@ -172,11 +172,11 @@ export default function Home() {
 
   const penghasilanBrutoTahunan = incomes.reduce(
     (acc, cur) => acc + cur.amount * Number(cur.occurence),
-    0
+    0,
   );
   const komponenPengurang = outcomes.reduce(
     (acc, cur) => acc + cur.amount * Number(cur.occurence),
-    0
+    0,
   );
   const penghasilanNettoTahunan = penghasilanBrutoTahunan - komponenPengurang;
   const ptkp = ptkpKategori[ptkpKey].tarif;
@@ -185,15 +185,15 @@ export default function Home() {
 
   const pphTerutangPertahun = calculatedProgressiveTaxes.reduce(
     (a, c) => c.pphTerutang + a,
-    0
+    0,
   );
   const pphTerutangPerbulan = pphTerutangPertahun / 12;
 
   return (
-    <main className="max-w-lg md:max-w-6xl px-2 lg:px-0 mx-auto py-8 md:py-12">
-      <div className="mb-4 mx-auto text-center">
-        <h1 className="text-3xl text-center">Pajakin</h1>
-        <h2 className="text-xl mt-4 text-center">
+    <main className="mx-auto max-w-lg px-2 py-8 md:max-w-6xl md:py-12 lg:px-0">
+      <div className="mx-auto mb-4 text-center">
+        <h1 className="text-center text-3xl">Pajakin</h1>
+        <h2 className="mt-4 text-center text-xl">
           Kalkulator penghitung pajak progresif PPh 21 pekerja Indonesia
         </h2>
         <p className="mt-2 text-sm text-slate-400">
@@ -218,7 +218,7 @@ export default function Home() {
       <p className="mt-2 text-slate-300">1. Masukan penghasilan</p>
       <button
         onClick={() => setModalState("open")}
-        className="px-4 py-2.5 flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 rounded-lg active:scale-95 transition"
+        className="flex items-center justify-center gap-2 rounded-lg bg-slate-700 px-4 py-2.5 transition hover:bg-slate-600 active:scale-95"
         type="button"
       >
         <svg
@@ -227,7 +227,7 @@ export default function Home() {
           viewBox="0 0 24 24"
           strokeWidth={1.5}
           stroke="currentColor"
-          className="w-6 h-6"
+          className="h-6 w-6"
         >
           <path
             strokeLinecap="round"
@@ -241,14 +241,14 @@ export default function Home() {
       {/* Modal start */}
       <div
         data-shown={modalState === "open"}
-        className={`fixed bg-slate-700 z-10 h-screen top-0 right-0 translate-x-full md:translate-x-[500px] lg:translate-x-[700px] data-[shown=true]:translate-x-0 p-4 w-screen md:w-[500px] lg:w-[700px] transition ease-in-out duration-300 overflow-y-scroll overscroll-contain ${""}`}
+        className={`fixed right-0 top-0 z-10 h-screen w-screen translate-x-full overflow-y-scroll overscroll-contain bg-slate-700 p-4 transition duration-300 ease-in-out data-[shown=true]:translate-x-0 md:w-[500px] md:translate-x-[500px] lg:w-[700px] lg:translate-x-[700px]`}
       >
         <div className="flex items-center justify-between">
           <h4 className="text-2xl">Input Penghasilan</h4>
           <button
             type="button"
             onClick={() => setModalState("closed")}
-            className="bg-slate-800 rounded-md active:scale-90 transition"
+            className="rounded-md bg-slate-800 transition active:scale-90"
             tabIndex={modalState === "open" ? undefined : -1}
           >
             <svg
@@ -257,7 +257,7 @@ export default function Home() {
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="w-8 h-8"
+              className="h-8 w-8"
             >
               <path
                 strokeLinecap="round"
@@ -269,10 +269,10 @@ export default function Home() {
         </div>
         <div className="mt-4">
           <div className="w-full overflow-scroll">
-            <table className="border border-collapse border-slate-500 w-full">
+            <table className="w-full border-collapse border border-slate-500">
               <thead>
                 <tr>
-                  <th className="border border-slate-600 rounded-tl-md">
+                  <th className="rounded-tl-md border border-slate-600">
                     Nominal
                   </th>
                   <th className="border border-slate-600">Pengali</th>
@@ -286,7 +286,7 @@ export default function Home() {
                   <tr key={income.id}>
                     <td className="border border-slate-600 p-1">
                       <NumericFormat
-                        className="bg-slate-800 py-1 px-2 rounded-lg disabled:bg-black text-right w-40"
+                        className="w-40 rounded-lg bg-slate-800 px-2 py-1 text-right disabled:bg-black"
                         thousandSeparator="."
                         decimalSeparator=","
                         prefix="Rp"
@@ -296,8 +296,8 @@ export default function Home() {
                             prev.map((prevIncome) =>
                               prevIncome.id === income.id
                                 ? { ...prevIncome, amount: e.floatValue ?? 0 }
-                                : prevIncome
-                            )
+                                : prevIncome,
+                            ),
                           )
                         }
                         tabIndex={modalState === "open" ? undefined : -1}
@@ -305,7 +305,7 @@ export default function Home() {
                     </td>
                     <td className="border border-slate-600 p-1">
                       <input
-                        className="bg-slate-800 py-1 px-2 rounded-lg disabled:bg-black w-20"
+                        className="w-20 rounded-lg bg-slate-800 px-2 py-1 disabled:bg-black"
                         value={income.occurence}
                         tabIndex={modalState === "open" ? undefined : -1}
                         onChange={(e) => {
@@ -316,15 +316,15 @@ export default function Home() {
                                     ...prevIncome,
                                     occurence: e.target.value,
                                   }
-                                : prevIncome
-                            )
+                                : prevIncome,
+                            ),
                           );
                         }}
                       />
                     </td>
                     <td className="border border-slate-600 p-1">
                       <input
-                        className="bg-slate-800 py-1 px-2 rounded-lg disabled:bg-black w-24"
+                        className="w-24 rounded-lg bg-slate-800 px-2 py-1 disabled:bg-black"
                         value={income.desc}
                         onChange={() => {}}
                         tabIndex={modalState === "open" ? undefined : -1}
@@ -332,7 +332,7 @@ export default function Home() {
                     </td>
                     <td className="border border-slate-600 p-1">
                       <NumericFormat
-                        className="bg-slate-800 py-1 px-2 rounded-lg disabled:bg-slate-900 text-right"
+                        className="rounded-lg bg-slate-800 px-2 py-1 text-right disabled:bg-slate-900"
                         thousandSeparator="."
                         decimalSeparator=","
                         prefix="Rp"
@@ -343,7 +343,7 @@ export default function Home() {
                     </td>
                     <td className="border border-slate-600 p-1">
                       <button
-                        className="text-sm text-red-400 text-center px-1 active:scale-90 transition"
+                        className="px-1 text-center text-sm text-red-400 transition active:scale-90"
                         onClick={() =>
                           setIncomes((prev) => {
                             if (prev.length === 1) {
@@ -352,7 +352,7 @@ export default function Home() {
                               ];
                             }
                             return prev.filter(
-                              (prevIncome) => prevIncome.id !== income.id
+                              (prevIncome) => prevIncome.id !== income.id,
                             );
                           })
                         }
@@ -368,7 +368,7 @@ export default function Home() {
                     <button
                       type="button"
                       onClick={addNewIncomeRow}
-                      className="bg-slate-800 text-slate-400 hover:text-white italic text-sm hover:bg-opacity-70 rounded-md active:scale-95 transition w-full"
+                      className="w-full rounded-md bg-slate-800 text-sm italic text-slate-400 transition hover:bg-opacity-70 hover:text-white active:scale-95"
                       tabIndex={modalState === "open" ? undefined : -1}
                     >
                       Baris Baru +
@@ -381,13 +381,13 @@ export default function Home() {
                   </td>
                   <td>
                     <NumericFormat
-                      className="bg-slate-800 py-1 px-2 rounded-lg disabled:bg-slate-900 text-right"
+                      className="rounded-lg bg-slate-800 px-2 py-1 text-right disabled:bg-slate-900"
                       thousandSeparator="."
                       decimalSeparator=","
                       prefix="Rp"
                       value={incomes.reduce(
                         (acc, cur) => acc + cur.amount * Number(cur.occurence),
-                        0
+                        0,
                       )}
                       readOnly
                       disabled
@@ -404,10 +404,10 @@ export default function Home() {
               iuran JHT, iuran JP, dan sejenisnya.
             </p>
             <div className="w-full overflow-scroll">
-              <table className="border border-collapse border-slate-500 w-full">
+              <table className="w-full border-collapse border border-slate-500">
                 <thead>
                   <tr>
-                    <th className="border border-slate-600 rounded-tl-md">
+                    <th className="rounded-tl-md border border-slate-600">
                       Nominal
                     </th>
                     <th className="border border-slate-600">Pengali</th>
@@ -421,7 +421,7 @@ export default function Home() {
                     <tr key={outcome.id}>
                       <td className="border border-slate-600 p-1">
                         <NumericFormat
-                          className="bg-slate-800 py-1 px-2 rounded-lg disabled:bg-black text-right w-40"
+                          className="w-40 rounded-lg bg-slate-800 px-2 py-1 text-right disabled:bg-black"
                           thousandSeparator="."
                           decimalSeparator=","
                           prefix="Rp"
@@ -434,8 +434,8 @@ export default function Home() {
                                       ...prevOutcome,
                                       amount: e.floatValue ?? 0,
                                     }
-                                  : prevOutcome
-                              )
+                                  : prevOutcome,
+                              ),
                             )
                           }
                           tabIndex={modalState === "open" ? undefined : -1}
@@ -443,7 +443,7 @@ export default function Home() {
                       </td>
                       <td className="border border-slate-600 p-1">
                         <input
-                          className="bg-slate-800 py-1 px-2 rounded-lg disabled:bg-black w-20"
+                          className="w-20 rounded-lg bg-slate-800 px-2 py-1 disabled:bg-black"
                           value={outcome.occurence}
                           tabIndex={modalState === "open" ? undefined : -1}
                           onChange={(e) => {
@@ -454,15 +454,15 @@ export default function Home() {
                                       ...prevOutcome,
                                       occurence: e.target.value,
                                     }
-                                  : prevOutcome
-                              )
+                                  : prevOutcome,
+                              ),
                             );
                           }}
                         />
                       </td>
                       <td className="border border-slate-600 p-1">
                         <input
-                          className="bg-slate-800 py-1 px-2 rounded-lg disabled:bg-black w-24"
+                          className="w-24 rounded-lg bg-slate-800 px-2 py-1 disabled:bg-black"
                           value={outcome.desc}
                           onChange={() => {}}
                           tabIndex={modalState === "open" ? undefined : -1}
@@ -470,7 +470,7 @@ export default function Home() {
                       </td>
                       <td className="border border-slate-600 p-1">
                         <NumericFormat
-                          className="bg-slate-800 py-1 px-2 rounded-lg disabled:bg-slate-900 text-right"
+                          className="rounded-lg bg-slate-800 px-2 py-1 text-right disabled:bg-slate-900"
                           thousandSeparator="."
                           decimalSeparator=","
                           prefix="Rp"
@@ -481,7 +481,7 @@ export default function Home() {
                       </td>
                       <td className="border border-slate-600 p-1">
                         <button
-                          className="text-sm text-red-400 text-center px-1 active:scale-90 transition"
+                          className="px-1 text-center text-sm text-red-400 transition active:scale-90"
                           onClick={() =>
                             setOutcomes((prev) => {
                               if (prev.length === 1) {
@@ -494,7 +494,7 @@ export default function Home() {
                                 ];
                               }
                               return prev.filter(
-                                (prevOutcome) => prevOutcome.id !== outcome.id
+                                (prevOutcome) => prevOutcome.id !== outcome.id,
                               );
                             })
                           }
@@ -510,7 +510,7 @@ export default function Home() {
                       <button
                         type="button"
                         onClick={addNewOutcomeRow}
-                        className="bg-slate-800 text-slate-400 hover:text-white italic text-sm hover:bg-opacity-70 rounded-md active:scale-95 transition w-full"
+                        className="w-full rounded-md bg-slate-800 text-sm italic text-slate-400 transition hover:bg-opacity-70 hover:text-white active:scale-95"
                         tabIndex={modalState === "open" ? undefined : -1}
                       >
                         Baris Baru +
@@ -523,14 +523,14 @@ export default function Home() {
                     </td>
                     <td>
                       <NumericFormat
-                        className="bg-slate-800 py-1 px-2 rounded-lg disabled:bg-slate-900 text-right"
+                        className="rounded-lg bg-slate-800 px-2 py-1 text-right disabled:bg-slate-900"
                         thousandSeparator="."
                         decimalSeparator=","
                         prefix="Rp"
                         value={outcomes.reduce(
                           (acc, cur) =>
                             acc + cur.amount * Number(cur.occurence),
-                          0
+                          0,
                         )}
                         readOnly
                         disabled
@@ -544,7 +544,7 @@ export default function Home() {
           <div className="mt-4 flex justify-end">
             <button
               type="button"
-              className="bg-green-700 px-4 py-2 rounded-md active:scale-90 transition"
+              className="rounded-md bg-green-700 px-4 py-2 transition active:scale-90"
               onClick={() => setModalState("closed")}
               tabIndex={modalState === "open" ? undefined : -1}
             >
@@ -557,7 +557,7 @@ export default function Home() {
 
       <p className="mt-3 text-slate-300">2. Pilih Golongan</p>
       <select
-        className="bg-slate-700 hover:bg-slate-600 py-3 px-4 rounded-lg transition-colors min-w-min cursor-pointer"
+        className="min-w-min cursor-pointer rounded-lg bg-slate-700 px-4 py-3 transition-colors hover:bg-slate-600"
         onChange={(v) =>
           setPtkpKey(v.target.value as keyof typeof ptkpKategori)
         }
@@ -573,7 +573,7 @@ export default function Home() {
 
       <p className="mt-3 text-slate-300">Penghasilan bruto setahun</p>
       <NumericFormat
-        className="bg-slate-800 py-1 px-2 rounded-lg disabled:bg-slate-900"
+        className="rounded-lg bg-slate-800 px-2 py-1 disabled:bg-slate-900"
         thousandSeparator="."
         decimalSeparator=","
         prefix="Rp"
@@ -584,7 +584,7 @@ export default function Home() {
 
       <p className="mt-4 text-slate-300">Komponen pengurang setahun</p>
       <NumericFormat
-        className="bg-slate-800 py-1 px-2 rounded-lg disabled:bg-slate-900"
+        className="rounded-lg bg-slate-800 px-2 py-1 disabled:bg-slate-900"
         thousandSeparator="."
         decimalSeparator=","
         prefix="Rp"
@@ -598,7 +598,7 @@ export default function Home() {
         (Penghasilan bruto setahun - Komponen pengurang setahun)
       </p>
       <NumericFormat
-        className="mt-1 bg-slate-800 py-1 px-2 rounded-lg disabled:bg-slate-900"
+        className="mt-1 rounded-lg bg-slate-800 px-2 py-1 disabled:bg-slate-900"
         thousandSeparator="."
         decimalSeparator=","
         prefix="Rp"
@@ -614,7 +614,7 @@ export default function Home() {
         Berdasarkan golongan yang dipilih
       </p>
       <NumericFormat
-        className="mt-1 bg-slate-800 py-1 px-2 rounded-lg disabled:bg-slate-900"
+        className="mt-1 rounded-lg bg-slate-800 px-2 py-1 disabled:bg-slate-900"
         thousandSeparator="."
         decimalSeparator=","
         prefix="Rp"
@@ -628,7 +628,7 @@ export default function Home() {
         (Penghasilan netto setahun - PTKP)
       </p>
       <NumericFormat
-        className="mt-1 bg-slate-800 py-1 px-2 rounded-lg disabled:bg-slate-900"
+        className="mt-1 rounded-lg bg-slate-800 px-2 py-1 disabled:bg-slate-900"
         thousandSeparator="."
         decimalSeparator=","
         prefix="Rp"
@@ -639,19 +639,19 @@ export default function Home() {
 
       {/* TABEL */}
       <div className="mt-6 w-full overflow-scroll">
-        <table className="rounded-xl w-[600px] md:w-full border-separate border-spacing-0 border border-slate-400">
+        <table className="w-[600px] border-separate border-spacing-0 rounded-xl border border-slate-400 md:w-full">
           <thead className="rounded-tl-xl">
-            <tr className="text-lg border-b-2 border-slate-400">
-              <th className="rounded-tl-xl p-3 bg-slate-800 text-left border border-slate-600">
+            <tr className="border-b-2 border-slate-400 text-lg">
+              <th className="rounded-tl-xl border border-slate-600 bg-slate-800 p-3 text-left">
                 Range Pajak Progresif
               </th>
-              <th className="p-3 bg-slate-800 border border-slate-600">
+              <th className="border border-slate-600 bg-slate-800 p-3">
                 Persentase
               </th>
-              <th className="p-3 bg-slate-800 text-right border border-slate-600">
+              <th className="border border-slate-600 bg-slate-800 p-3 text-right">
                 Besaran Kena Pajak
               </th>
-              <th className="rounded-tr-xl p-3 bg-slate-800 text-right border border-slate-600">
+              <th className="rounded-tr-xl border border-slate-600 bg-slate-800 p-3 text-right">
                 PPh Terutang
               </th>
             </tr>
@@ -660,17 +660,17 @@ export default function Home() {
             {calculatedProgressiveTaxes.map((calcProgTax, i) => {
               return (
                 <tr key={i}>
-                  <td className="px-4 py-3 border border-slate-600">
+                  <td className="border border-slate-600 px-4 py-3">
                     {calcProgTax.label}
                   </td>
 
-                  <td className="px-4 py-3 text-center border border-slate-600">
+                  <td className="border border-slate-600 px-4 py-3 text-center">
                     {calcProgTax.persentasePajak * 100}%
                   </td>
-                  <td className="px-4 py-3 text-right border border-slate-600">
+                  <td className="border border-slate-600 px-4 py-3 text-right">
                     {formatCurrency(calcProgTax.besaranKenaPajak)}
                   </td>
-                  <td className="px-4 py-3 text-right border border-slate-600">
+                  <td className="border border-slate-600 px-4 py-3 text-right">
                     {formatCurrency(calcProgTax.pphTerutang)}
                   </td>
                 </tr>
@@ -680,7 +680,7 @@ export default function Home() {
               <td colSpan={3} className="px-4 py-2 text-right">
                 Pph Terutang per tahun
               </td>
-              <td className="text-right px-4 py-2">
+              <td className="px-4 py-2 text-right">
                 {formatCurrency(pphTerutangPertahun)}
               </td>
             </tr>
@@ -688,7 +688,7 @@ export default function Home() {
               <td colSpan={3} className="px-4 py-2 text-right">
                 PPh Terutang per bulan
               </td>
-              <td className="text-right px-4 py-2">
+              <td className="px-4 py-2 text-right">
                 {formatCurrency(pphTerutangPerbulan)}
               </td>
             </tr>
@@ -700,16 +700,16 @@ export default function Home() {
         <>
           <h3 className="mt-10 text-xl">Kesimpulan</h3>
 
-          <p className="mt-3 text-slate-300 text-lg">
+          <p className="mt-3 text-lg text-slate-300">
             Pajak yang mesti dibayarkan per tahun adalah sebesar:{" "}
             <span className="text-slate-200">
               {formatCurrency(pphTerutangPertahun)}
             </span>
           </p>
 
-          <p className="text-slate-300 text-lg">
+          <p className="text-lg text-slate-300">
             Atau per bulan sebesar:{" "}
-            <span className="text-slate-200 text-xl">
+            <span className="text-xl text-slate-200">
               {formatCurrency(pphTerutangPerbulan)}
             </span>
           </p>
@@ -718,12 +718,12 @@ export default function Home() {
         <div className="h-8" />
       )}
 
-      <footer className="fixed right-2 bottom-2">
+      <footer className="fixed bottom-2 right-2">
         <a
           href="https://asadghanim.vercel.app"
           target="_blank"
           rel="noopener noreferrer"
-          className="bg-slate-600 hover:bg-slate-500 transition-all p-1 rounded-md text-xs"
+          className="rounded-md bg-slate-600 p-1 text-xs transition-all hover:bg-slate-500"
         >
           By As&apos;ad Ghanim
         </a>
