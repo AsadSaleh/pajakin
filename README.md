@@ -23,6 +23,7 @@ Saya menggunakan [Next.js](https://nextjs.org/). Untuk kontribusi, silahkan runn
 
 ## Other Images
 
-<img alt="Pajakin di HP" src="https://pajakin.vercel.app/images/mobile_main.png">
-<img alt="Pajakin di HP" src="https://pajakin.vercel.app/images/mobile_sidepanel.png">
-<img alt="Pajakin di HP" src="https://pajakin.vercel.app/images/pajakin_main.png">
+<img alt="Pajakin di HP" src="https://pajakin.vercel.app/images/mobile_main.png" style="width:120px">
+<img alt="Kalukulator Pajakin di HP" src="https://pajakin.vercel.app/images/mobile_sidepanel.png" style="width:120px">
+<img alt="Halaman utama Pajakin" src="https://pajakin.vercel.app/images/pajakin_main.png">
+<img alt="Kalkulator Pajakin" src="https://pajakin.vercel.app/images/pajakin_sidepanel.png">
