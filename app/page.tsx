@@ -190,12 +190,28 @@ export default function Home() {
   const pphTerutangPerbulan = pphTerutangPertahun / 12;
 
   return (
-    <main className="max-w-lg md:max-w-6xl px-2 lg:px-0 mx-auto py-8 md:py-20">
+    <main className="max-w-lg md:max-w-6xl px-2 lg:px-0 mx-auto py-8 md:py-12">
       <div className="mb-4 mx-auto text-center">
         <h1 className="text-3xl text-center">Pajakin</h1>
         <h2 className="text-xl mt-4 text-center">
           Kalkulator penghitung pajak progresif PPh 21 pekerja Indonesia
         </h2>
+        <p className="mt-2 text-sm text-slate-400">
+          Pajakin gratis dan{" "}
+          <a
+            href="https://github.com/AsadSaleh/pajakin/"
+            className="hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            open source
+          </a>
+          .
+        </p>
+        <p className="text-sm text-slate-400">
+          Pajakin tidak pernah mengambil maupun men-track data Anda. Semua data
+          hanya disimpan di browser Anda.
+        </p>
       </div>
 
       <h3 className="text-xl">Isian</h3>
@@ -224,11 +240,8 @@ export default function Home() {
 
       {/* Modal start */}
       <div
-        className={`fixed bg-slate-700 z-10 h-screen top-0 right-0 p-4 w-screen md:w-[500px] lg:w-[700px] transition ease-in-out duration-300 overflow-y-scroll overscroll-contain ${
-          modalState === "open"
-            ? "translate-x-0"
-            : "translate-x-full md:translate-x-[500px] lg:translate-x-[700px]"
-        }`}
+        data-shown={modalState === "open"}
+        className={`fixed bg-slate-700 z-10 h-screen top-0 right-0 translate-x-full md:translate-x-[500px] lg:translate-x-[700px] data-[shown=true]:translate-x-0 p-4 w-screen md:w-[500px] lg:w-[700px] transition ease-in-out duration-300 overflow-y-scroll overscroll-contain ${""}`}
       >
         <div className="flex items-center justify-between">
           <h4 className="text-2xl">Input Penghasilan</h4>
@@ -626,10 +639,10 @@ export default function Home() {
 
       {/* TABEL */}
       <div className="mt-6 w-full overflow-scroll">
-        <table className="w-[600px] md:w-full border-collapse border border-slate-400">
-          <thead>
+        <table className="rounded-xl w-[600px] md:w-full border-separate border-spacing-0 border border-slate-400">
+          <thead className="rounded-tl-xl">
             <tr className="text-lg border-b-2 border-slate-400">
-              <th className="p-3 bg-slate-800 text-left border border-slate-600">
+              <th className="rounded-tl-xl p-3 bg-slate-800 text-left border border-slate-600">
                 Range Pajak Progresif
               </th>
               <th className="p-3 bg-slate-800 border border-slate-600">
@@ -638,7 +651,7 @@ export default function Home() {
               <th className="p-3 bg-slate-800 text-right border border-slate-600">
                 Besaran Kena Pajak
               </th>
-              <th className="p-3 bg-slate-800 text-right border border-slate-600">
+              <th className="rounded-tr-xl p-3 bg-slate-800 text-right border border-slate-600">
                 PPh Terutang
               </th>
             </tr>
