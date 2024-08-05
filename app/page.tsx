@@ -208,16 +208,14 @@ export default function Home() {
             Komponen biaya yang menambah pajak contohnya: Gaji bulanan, komisi
             penjualan, THR, bonus, dan sejenisnya.
           </p>
-          <table className="w-[500px] border-collapse border border-slate-500 md:w-full">
+          <table className="mt-2 w-[500px] border-separate border-spacing-0 rounded-xl border border-slate-500 md:w-full">
             <thead>
               <tr>
-                <th className="w-1/4 rounded-tl-md border border-slate-600">
-                  Nominal
-                </th>
-                <th className="w-1/12 border border-slate-600">Pengali</th>
-                <th className="w-1/4 border border-slate-600">Keterangan</th>
-                <th className="w-1/4 border border-slate-600">Subtotal</th>
-                <th className="w-1/12 border border-slate-600"></th>
+                <th className="w-1/4">Nominal</th>
+                <th className="w-1/12">Pengali</th>
+                <th className="w-1/4">Keterangan</th>
+                <th className="w-1/4">Subtotal</th>
+                <th className="w-1/12"></th>
               </tr>
             </thead>
             <tbody>
@@ -242,9 +240,11 @@ export default function Home() {
                     />
                   </td>
                   <td className="border border-slate-600 p-1">
-                    <input
+                    <NumericFormat
                       className="w-full rounded-lg bg-slate-800 px-2 py-1 text-right disabled:bg-black"
                       value={income.occurence}
+                      thousandSeparator="."
+                      decimalSeparator=","
                       onChange={(e) => {
                         setIncomes((prev) =>
                           prev.map((prevIncome) =>
@@ -338,16 +338,14 @@ export default function Home() {
             JHT, iuran JP, dan sejenisnya.
           </p>
           <div className="w-full overflow-scroll">
-            <table className="w-[500px] border-collapse border border-slate-500 md:w-full">
+            <table className="mt-2 w-[500px] border-separate border-spacing-0 rounded-xl border border-slate-500 md:w-full">
               <thead>
                 <tr>
-                  <th className="w-1/4 rounded-tl-md border border-slate-600">
-                    Nominal
-                  </th>
-                  <th className="w-1/12 border border-slate-600">Pengali</th>
-                  <th className="w-1/4 border border-slate-600">Keterangan</th>
-                  <th className="w-1/4 border border-slate-600">Subtotal</th>
-                  <th className="w-1/12 border border-slate-600"></th>
+                  <th className="w-1/4">Nominal</th>
+                  <th className="w-1/12 border-slate-600">Pengali</th>
+                  <th className="w-1/4 border-slate-600">Keterangan</th>
+                  <th className="w-1/4 border-slate-600">Subtotal</th>
+                  <th className="w-1/12 rounded-tr-xl border-slate-600"></th>
                 </tr>
               </thead>
               <tbody>
@@ -375,9 +373,11 @@ export default function Home() {
                       />
                     </td>
                     <td className="border border-slate-600 p-1">
-                      <input
+                      <NumericFormat
                         className="w-full rounded-lg bg-slate-800 px-2 py-1 text-right disabled:bg-black"
                         value={outcome.occurence}
+                        thousandSeparator="."
+                        decimalSeparator=","
                         onChange={(e) => {
                           setOutcomes((prev) =>
                             prev.map((prevOutcome) =>
@@ -395,8 +395,7 @@ export default function Home() {
                     <td className="border border-slate-600 p-1">
                       <input
                         className="w-full rounded-lg bg-slate-800 px-2 py-1 disabled:bg-black"
-                        value={outcome.desc}
-                        onChange={() => {}}
+                        defaultValue={outcome.desc}
                       />
                     </td>
                     <td className="border border-slate-600 p-1">
@@ -479,7 +478,7 @@ export default function Home() {
         >
           {Object.entries(ptkpKategori).map(([key, value]) => (
             <option key={key} value={key}>
-              {value.desc}
+              {value.desc} - {formatCurrency(value.tarif)}
             </option>
           ))}
         </select>
@@ -566,7 +565,7 @@ export default function Home() {
           {/* TABEL */}
           <div className="mt-6 w-full overflow-scroll">
             <table className="w-[600px] border-separate border-spacing-0 rounded-xl border border-slate-400 md:w-full">
-              <thead className="rounded-tl-xl">
+              <thead>
                 <tr className="border-b-2 border-slate-400 text-lg">
                   <th className="rounded-tl-xl border border-slate-600 bg-slate-800 p-3 text-left">
                     Range Pajak Progresif
@@ -574,10 +573,10 @@ export default function Home() {
                   <th className="border border-slate-600 bg-slate-800 p-3">
                     Persentase
                   </th>
-                  <th className="border border-slate-600 bg-slate-800 p-3 text-right">
+                  <th className="border border-slate-600 bg-slate-800 p-3">
                     Besaran Kena Pajak
                   </th>
-                  <th className="rounded-tr-xl border border-slate-600 bg-slate-800 p-3 text-right">
+                  <th className="rounded-tr-xl border border-slate-600 bg-slate-800 p-3">
                     PPh Terutang
                   </th>
                 </tr>
@@ -623,10 +622,10 @@ export default function Home() {
           </div>
 
           {penghasilanBrutoTahunan ? (
-            <>
-              <h3 className="mt-10 text-xl">Kesimpulan</h3>
+            <div className="mt-8 rounded-xl bg-slate-800 p-4">
+              <h3 className="text-xl">Kesimpulan</h3>
 
-              <p className="mt-3 text-lg text-slate-300">
+              <p className="mt-2 text-lg text-slate-300">
                 Pajak yang mesti dibayarkan per tahun adalah sebesar:{" "}
                 <span className="text-slate-200">
                   {formatCurrency(pphTerutangPertahun)}
@@ -639,7 +638,7 @@ export default function Home() {
                   {formatCurrency(pphTerutangPerbulan)}
                 </span>
               </p>
-            </>
+            </div>
           ) : (
             <div className="h-8" />
           )}
