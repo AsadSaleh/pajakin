@@ -133,7 +133,7 @@ type Income = {
 };
 
 export default function Home() {
-  const [modalState, setModalState] = useState<"closed" | "open">("closed");
+  const [showResult, setShowResult] = useState<"closed" | "open">("closed");
   const [incomes, setIncomes] = useState<Income[]>([
     { id: numberGen(), amount: 0, occurence: "1" },
   ]);
@@ -141,20 +141,6 @@ export default function Home() {
   const [outcomes, setOutcomes] = useState<Income[]>([
     { id: numberGen(), amount: 0, occurence: "1" },
   ]);
-
-  // Close modal when escape key is pressed
-  useEffect(() => {
-    function handleEsc(e: KeyboardEvent) {
-      if (e.key === "Escape") {
-        setModalState("closed");
-      }
-    }
-
-    window.addEventListener("keydown", handleEsc);
-    return () => {
-      window.removeEventListener("keydown", handleEsc);
-    };
-  }, []);
 
   function addNewIncomeRow() {
     setIncomes((prev) =>
@@ -190,13 +176,13 @@ export default function Home() {
   const pphTerutangPerbulan = pphTerutangPertahun / 12;
 
   return (
-    <main className="mx-auto max-w-lg px-2 py-8 md:max-w-6xl md:py-12 lg:px-0">
+    <main className="mx-auto max-w-lg px-2 py-8 pb-20 md:max-w-2xl md:py-12 lg:max-w-5xl lg:px-0">
       <div className="mx-auto mb-4 text-center">
         <h1 className="text-center text-3xl">Pajakin</h1>
-        <h2 className="mt-4 text-center text-xl">
+        <h2 className="mt-4 text-left text-xl sm:text-center">
           Kalkulator penghitung pajak progresif PPh 21 pekerja Indonesia
         </h2>
-        <p className="mt-2 text-sm text-slate-400">
+        <p className="mt-2 text-left text-sm text-slate-400 sm:text-center">
           Pajakin gratis dan{" "}
           <a
             href="https://github.com/AsadSaleh/pajakin/"
@@ -208,119 +194,199 @@ export default function Home() {
           </a>
           .
         </p>
-        <p className="text-sm text-slate-400">
+        <p className="text-left text-sm text-slate-400 sm:text-center">
           Pajakin tidak pernah mengambil maupun men-track data Anda. Semua data
           hanya disimpan di browser Anda.
         </p>
       </div>
 
-      <h3 className="text-xl">Isian</h3>
-      <p className="mt-2 text-slate-300">1. Masukan penghasilan</p>
-      <button
-        onClick={() => setModalState("open")}
-        className="flex items-center justify-center gap-2 rounded-lg bg-slate-700 px-4 py-2.5 transition hover:bg-slate-600 active:scale-95"
-        type="button"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="h-6 w-6"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V13.5zm0 2.25h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V18zm2.498-6.75h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V13.5zm0 2.25h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V18zm2.504-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zm0 2.25h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V18zm2.498-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zM8.25 6h7.5v2.25h-7.5V6zM12 2.25c-1.892 0-3.758.11-5.593.322C5.307 2.7 4.5 3.65 4.5 4.757V19.5a2.25 2.25 0 002.25 2.25h10.5a2.25 2.25 0 002.25-2.25V4.757c0-1.108-.806-2.057-1.907-2.185A48.507 48.507 0 0012 2.25z"
-          />
-        </svg>
-        <p>Kalkulator penghasilan</p>
-      </button>
-
-      {/* Modal start */}
-      <div
-        data-shown={modalState === "open"}
-        className={`fixed -right-[calc(100%)] top-0 z-10 h-screen w-screen overflow-y-scroll overscroll-contain bg-slate-700 p-4 transition-all duration-300 ease-in-out data-[shown=true]:right-0 md:right-[-500px] md:w-[500px] lg:right-[-700px] lg:w-[700px]`}
-      >
-        <div className="flex items-center justify-between">
-          <h4 className="text-2xl">Input Penghasilan</h4>
-          <button
-            type="button"
-            onClick={() => setModalState("closed")}
-            className="rounded-md bg-slate-800 transition active:scale-90"
-            tabIndex={modalState === "open" ? undefined : -1}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="h-8 w-8"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
+      <div className="mt-12 flex items-center justify-between"></div>
+      <div className="mt-4">
+        <div className="w-full overflow-scroll">
+          <h4 className="text-2xl">1. Input Penghasilan</h4>
+          <p className="text-sm text-slate-400">
+            Komponen biaya yang menambah pajak contohnya: Gaji bulanan, komisi
+            penjualan, THR, bonus, dan sejenisnya.
+          </p>
+          <table className="w-[500px] border-collapse border border-slate-500 md:w-full">
+            <thead>
+              <tr>
+                <th className="w-1/4 rounded-tl-md border border-slate-600">
+                  Nominal
+                </th>
+                <th className="w-1/12 border border-slate-600">Pengali</th>
+                <th className="w-1/4 border border-slate-600">Keterangan</th>
+                <th className="w-1/4 border border-slate-600">Subtotal</th>
+                <th className="w-1/12 border border-slate-600"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {incomes.map((income) => (
+                <tr key={income.id}>
+                  <td className="border border-slate-600 p-1">
+                    <NumericFormat
+                      className="w-full rounded-lg bg-slate-800 px-2 py-1 text-right disabled:bg-black"
+                      thousandSeparator="."
+                      decimalSeparator=","
+                      prefix="Rp"
+                      value={income.amount}
+                      onValueChange={(e) =>
+                        setIncomes((prev) =>
+                          prev.map((prevIncome) =>
+                            prevIncome.id === income.id
+                              ? { ...prevIncome, amount: e.floatValue ?? 0 }
+                              : prevIncome,
+                          ),
+                        )
+                      }
+                    />
+                  </td>
+                  <td className="border border-slate-600 p-1">
+                    <input
+                      className="w-full rounded-lg bg-slate-800 px-2 py-1 text-right disabled:bg-black"
+                      value={income.occurence}
+                      onChange={(e) => {
+                        setIncomes((prev) =>
+                          prev.map((prevIncome) =>
+                            prevIncome.id === income.id
+                              ? {
+                                  ...prevIncome,
+                                  occurence: e.target.value,
+                                }
+                              : prevIncome,
+                          ),
+                        );
+                      }}
+                    />
+                  </td>
+                  <td className="border border-slate-600 p-1">
+                    <input
+                      className="w-full rounded-lg bg-slate-800 px-2 py-1 disabled:bg-black"
+                      value={income.desc}
+                      onChange={() => {}}
+                    />
+                  </td>
+                  <td className="border border-slate-600 p-1">
+                    <NumericFormat
+                      className="w-full rounded-lg bg-slate-800 px-2 py-1 text-right disabled:bg-slate-900"
+                      thousandSeparator="."
+                      decimalSeparator=","
+                      prefix="Rp"
+                      value={income.amount * Number(income.occurence)}
+                      readOnly
+                      disabled
+                    />
+                  </td>
+                  <td className="border border-slate-600 p-1">
+                    <button
+                      className="px-1 text-center text-sm text-red-400 transition active:scale-90"
+                      onClick={() =>
+                        setIncomes((prev) => {
+                          if (prev.length === 1) {
+                            return [
+                              { id: numberGen(), amount: 0, occurence: "1" },
+                            ];
+                          }
+                          return prev.filter(
+                            (prevIncome) => prevIncome.id !== income.id,
+                          );
+                        })
+                      }
+                    >
+                      Hapus
+                    </button>
+                  </td>
+                </tr>
+              ))}
+              <tr>
+                <td colSpan={5} className="px-1">
+                  <button
+                    type="button"
+                    onClick={addNewIncomeRow}
+                    className="w-full rounded-md bg-slate-800 text-sm italic text-slate-400 transition hover:bg-opacity-70 hover:text-white active:scale-95"
+                  >
+                    Baris Baru +
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td colSpan={3} className="pr-2 text-right">
+                  Total
+                </td>
+                <td>
+                  <NumericFormat
+                    className="w-full rounded-lg bg-slate-800 px-2 py-1 text-right disabled:bg-slate-900"
+                    thousandSeparator="."
+                    decimalSeparator=","
+                    prefix="Rp"
+                    value={incomes.reduce(
+                      (acc, cur) => acc + cur.amount * Number(cur.occurence),
+                      0,
+                    )}
+                    readOnly
+                    disabled
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <div className="mt-4">
+        <div className="mt-12">
+          <h4 className="text-2xl">2. Input Komponen pengurang</h4>
+          <p className="text-sm text-slate-400">
+            Komponen biaya yang mengurangi pajak contohnya: Biaya Jabatan, iuran
+            JHT, iuran JP, dan sejenisnya.
+          </p>
           <div className="w-full overflow-scroll">
-            <p className="text-sm text-slate-400">
-              Komponen biaya yang menambah pajak contohnya: Gaji bulanan, komisi
-              penjualan, THR, bonus, dan sejenisnya.
-            </p>
-            <table className="w-full border-collapse border border-slate-500">
+            <table className="w-[500px] border-collapse border border-slate-500 md:w-full">
               <thead>
                 <tr>
-                  <th className="rounded-tl-md border border-slate-600">
+                  <th className="w-1/4 rounded-tl-md border border-slate-600">
                     Nominal
                   </th>
-                  <th className="border border-slate-600">Pengali</th>
-                  <th className="border border-slate-600">Keterangan</th>
-                  <th className="border border-slate-600">Subtotal</th>
-                  <th className="border border-slate-600"></th>
+                  <th className="w-1/12 border border-slate-600">Pengali</th>
+                  <th className="w-1/4 border border-slate-600">Keterangan</th>
+                  <th className="w-1/4 border border-slate-600">Subtotal</th>
+                  <th className="w-1/12 border border-slate-600"></th>
                 </tr>
               </thead>
               <tbody>
-                {incomes.map((income) => (
-                  <tr key={income.id}>
+                {outcomes.map((outcome) => (
+                  <tr key={outcome.id}>
                     <td className="border border-slate-600 p-1">
                       <NumericFormat
-                        className="w-40 rounded-lg bg-slate-800 px-2 py-1 text-right disabled:bg-black"
+                        className="w-full rounded-lg bg-slate-800 px-2 py-1 text-right disabled:bg-black"
                         thousandSeparator="."
                         decimalSeparator=","
                         prefix="Rp"
-                        value={income.amount}
+                        value={outcome.amount}
                         onValueChange={(e) =>
-                          setIncomes((prev) =>
-                            prev.map((prevIncome) =>
-                              prevIncome.id === income.id
-                                ? { ...prevIncome, amount: e.floatValue ?? 0 }
-                                : prevIncome,
+                          setOutcomes((prev) =>
+                            prev.map((prevOutcome) =>
+                              prevOutcome.id === outcome.id
+                                ? {
+                                    ...prevOutcome,
+                                    amount: e.floatValue ?? 0,
+                                  }
+                                : prevOutcome,
                             ),
                           )
                         }
-                        tabIndex={modalState === "open" ? undefined : -1}
                       />
                     </td>
                     <td className="border border-slate-600 p-1">
                       <input
-                        className="w-20 rounded-lg bg-slate-800 px-2 py-1 disabled:bg-black"
-                        value={income.occurence}
-                        tabIndex={modalState === "open" ? undefined : -1}
+                        className="w-full rounded-lg bg-slate-800 px-2 py-1 text-right disabled:bg-black"
+                        value={outcome.occurence}
                         onChange={(e) => {
-                          setIncomes((prev) =>
-                            prev.map((prevIncome) =>
-                              prevIncome.id === income.id
+                          setOutcomes((prev) =>
+                            prev.map((prevOutcome) =>
+                              prevOutcome.id === outcome.id
                                 ? {
-                                    ...prevIncome,
+                                    ...prevOutcome,
                                     occurence: e.target.value,
                                   }
-                                : prevIncome,
+                                : prevOutcome,
                             ),
                           );
                         }}
@@ -328,19 +394,18 @@ export default function Home() {
                     </td>
                     <td className="border border-slate-600 p-1">
                       <input
-                        className="w-24 rounded-lg bg-slate-800 px-2 py-1 disabled:bg-black"
-                        value={income.desc}
+                        className="w-full rounded-lg bg-slate-800 px-2 py-1 disabled:bg-black"
+                        value={outcome.desc}
                         onChange={() => {}}
-                        tabIndex={modalState === "open" ? undefined : -1}
                       />
                     </td>
                     <td className="border border-slate-600 p-1">
                       <NumericFormat
-                        className="rounded-lg bg-slate-800 px-2 py-1 text-right disabled:bg-slate-900"
+                        className="w-full rounded-lg bg-slate-800 px-2 py-1 text-right disabled:bg-slate-900"
                         thousandSeparator="."
                         decimalSeparator=","
                         prefix="Rp"
-                        value={income.amount * Number(income.occurence)}
+                        value={outcome.amount * Number(outcome.occurence)}
                         readOnly
                         disabled
                       />
@@ -349,18 +414,21 @@ export default function Home() {
                       <button
                         className="px-1 text-center text-sm text-red-400 transition active:scale-90"
                         onClick={() =>
-                          setIncomes((prev) => {
+                          setOutcomes((prev) => {
                             if (prev.length === 1) {
                               return [
-                                { id: numberGen(), amount: 0, occurence: "1" },
+                                {
+                                  id: numberGen(),
+                                  amount: 0,
+                                  occurence: "1",
+                                },
                               ];
                             }
                             return prev.filter(
-                              (prevIncome) => prevIncome.id !== income.id,
+                              (prevOutcome) => prevOutcome.id !== outcome.id,
                             );
                           })
                         }
-                        tabIndex={modalState === "open" ? undefined : -1}
                       >
                         Hapus
                       </button>
@@ -371,25 +439,24 @@ export default function Home() {
                   <td colSpan={5} className="px-1">
                     <button
                       type="button"
-                      onClick={addNewIncomeRow}
+                      onClick={addNewOutcomeRow}
                       className="w-full rounded-md bg-slate-800 text-sm italic text-slate-400 transition hover:bg-opacity-70 hover:text-white active:scale-95"
-                      tabIndex={modalState === "open" ? undefined : -1}
                     >
                       Baris Baru +
                     </button>
                   </td>
                 </tr>
                 <tr>
-                  <td colSpan={3} className="text-right">
+                  <td colSpan={3} className="pr-2 text-right">
                     Total
                   </td>
                   <td>
                     <NumericFormat
-                      className="rounded-lg bg-slate-800 px-2 py-1 text-right disabled:bg-slate-900"
+                      className="w-full rounded-lg bg-slate-800 px-2 py-1 text-right disabled:bg-slate-900"
                       thousandSeparator="."
                       decimalSeparator=","
                       prefix="Rp"
-                      value={incomes.reduce(
+                      value={outcomes.reduce(
                         (acc, cur) => acc + cur.amount * Number(cur.occurence),
                         0,
                       )}
@@ -401,326 +468,183 @@ export default function Home() {
               </tbody>
             </table>
           </div>
-          <div className="mt-4">
-            <h4 className="text-xl">Komponen pengurang</h4>
-            <p className="text-sm text-slate-400">
-              Komponen biaya yang mengurangi pajak contohnya: Biaya Jabatan,
-              iuran JHT, iuran JP, dan sejenisnya.
-            </p>
-            <div className="w-full overflow-scroll">
-              <table className="w-full border-collapse border border-slate-500">
-                <thead>
-                  <tr>
-                    <th className="rounded-tl-md border border-slate-600">
-                      Nominal
-                    </th>
-                    <th className="border border-slate-600">Pengali</th>
-                    <th className="border border-slate-600">Keterangan</th>
-                    <th className="border border-slate-600">Subtotal</th>
-                    <th className="border border-slate-600"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {outcomes.map((outcome) => (
-                    <tr key={outcome.id}>
-                      <td className="border border-slate-600 p-1">
-                        <NumericFormat
-                          className="w-40 rounded-lg bg-slate-800 px-2 py-1 text-right disabled:bg-black"
-                          thousandSeparator="."
-                          decimalSeparator=","
-                          prefix="Rp"
-                          value={outcome.amount}
-                          onValueChange={(e) =>
-                            setOutcomes((prev) =>
-                              prev.map((prevOutcome) =>
-                                prevOutcome.id === outcome.id
-                                  ? {
-                                      ...prevOutcome,
-                                      amount: e.floatValue ?? 0,
-                                    }
-                                  : prevOutcome,
-                              ),
-                            )
-                          }
-                          tabIndex={modalState === "open" ? undefined : -1}
-                        />
+        </div>
+
+        <h4 className="mt-12 text-2xl">3. Pilih Golongan Tanggunan</h4>
+        <select
+          className="mt-2 w-full cursor-pointer rounded-lg bg-slate-700 px-4 py-3 transition-colors hover:bg-slate-600"
+          onChange={(v) =>
+            setPtkpKey(v.target.value as keyof typeof ptkpKategori)
+          }
+        >
+          {Object.entries(ptkpKategori).map(([key, value]) => (
+            <option key={key} value={key}>
+              {value.desc}
+            </option>
+          ))}
+        </select>
+
+        <button
+          type="button"
+          className="mt-12 w-full rounded-md bg-green-700 px-4 py-4 transition active:scale-95"
+          onClick={() => setShowResult("open")}
+        >
+          Tampilkan Hasil Perhitungan
+        </button>
+      </div>
+
+      {showResult === "open" ? (
+        <>
+          <h3 className="mt-10 text-2xl">Hasil Perhitungan</h3>
+
+          <p className="mt-3 text-slate-300">Penghasilan bruto setahun</p>
+          <NumericFormat
+            className="rounded-lg bg-slate-800 px-2 py-1 disabled:bg-slate-900"
+            thousandSeparator="."
+            decimalSeparator=","
+            prefix="Rp"
+            value={penghasilanBrutoTahunan}
+            disabled
+            readOnly
+          />
+
+          <p className="mt-4 text-slate-300">Komponen pengurang setahun</p>
+          <NumericFormat
+            className="rounded-lg bg-slate-800 px-2 py-1 disabled:bg-slate-900"
+            thousandSeparator="."
+            decimalSeparator=","
+            prefix="Rp"
+            value={komponenPengurang}
+            readOnly
+            disabled
+          />
+
+          <p className="mt-4 text-slate-300">Penghasilan netto setahun</p>
+          <p className="text-sm text-slate-400">
+            (Penghasilan bruto setahun - Komponen pengurang setahun)
+          </p>
+          <NumericFormat
+            className="mt-1 rounded-lg bg-slate-800 px-2 py-1 disabled:bg-slate-900"
+            thousandSeparator="."
+            decimalSeparator=","
+            prefix="Rp"
+            value={penghasilanNettoTahunan}
+            readOnly
+            disabled
+          />
+
+          <p className="mt-4 text-slate-300">
+            Penghasilan Tidak Kena Pajak (PTKP) setahun
+          </p>
+          <p className="text-sm text-slate-400">
+            Berdasarkan golongan yang dipilih
+          </p>
+          <NumericFormat
+            className="mt-1 rounded-lg bg-slate-800 px-2 py-1 disabled:bg-slate-900"
+            thousandSeparator="."
+            decimalSeparator=","
+            prefix="Rp"
+            value={ptkp}
+            readOnly
+            disabled
+          />
+
+          <p className="mt-4 text-slate-300">Penghasilan kena pajak setahun</p>
+          <p className="text-sm text-slate-400">
+            (Penghasilan netto setahun - PTKP)
+          </p>
+          <NumericFormat
+            className="mt-1 rounded-lg bg-slate-800 px-2 py-1 disabled:bg-slate-900"
+            thousandSeparator="."
+            decimalSeparator=","
+            prefix="Rp"
+            value={pkp}
+            readOnly
+            disabled
+          />
+
+          {/* TABEL */}
+          <div className="mt-6 w-full overflow-scroll">
+            <table className="w-[600px] border-separate border-spacing-0 rounded-xl border border-slate-400 md:w-full">
+              <thead className="rounded-tl-xl">
+                <tr className="border-b-2 border-slate-400 text-lg">
+                  <th className="rounded-tl-xl border border-slate-600 bg-slate-800 p-3 text-left">
+                    Range Pajak Progresif
+                  </th>
+                  <th className="border border-slate-600 bg-slate-800 p-3">
+                    Persentase
+                  </th>
+                  <th className="border border-slate-600 bg-slate-800 p-3 text-right">
+                    Besaran Kena Pajak
+                  </th>
+                  <th className="rounded-tr-xl border border-slate-600 bg-slate-800 p-3 text-right">
+                    PPh Terutang
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {calculatedProgressiveTaxes.map((calcProgTax, i) => {
+                  return (
+                    <tr key={i}>
+                      <td className="border border-slate-600 px-4 py-3">
+                        {calcProgTax.label}
                       </td>
-                      <td className="border border-slate-600 p-1">
-                        <input
-                          className="w-20 rounded-lg bg-slate-800 px-2 py-1 disabled:bg-black"
-                          value={outcome.occurence}
-                          tabIndex={modalState === "open" ? undefined : -1}
-                          onChange={(e) => {
-                            setOutcomes((prev) =>
-                              prev.map((prevOutcome) =>
-                                prevOutcome.id === outcome.id
-                                  ? {
-                                      ...prevOutcome,
-                                      occurence: e.target.value,
-                                    }
-                                  : prevOutcome,
-                              ),
-                            );
-                          }}
-                        />
+
+                      <td className="border border-slate-600 px-4 py-3 text-center">
+                        {calcProgTax.persentasePajak * 100}%
                       </td>
-                      <td className="border border-slate-600 p-1">
-                        <input
-                          className="w-24 rounded-lg bg-slate-800 px-2 py-1 disabled:bg-black"
-                          value={outcome.desc}
-                          onChange={() => {}}
-                          tabIndex={modalState === "open" ? undefined : -1}
-                        />
+                      <td className="border border-slate-600 px-4 py-3 text-right">
+                        {formatCurrency(calcProgTax.besaranKenaPajak)}
                       </td>
-                      <td className="border border-slate-600 p-1">
-                        <NumericFormat
-                          className="rounded-lg bg-slate-800 px-2 py-1 text-right disabled:bg-slate-900"
-                          thousandSeparator="."
-                          decimalSeparator=","
-                          prefix="Rp"
-                          value={outcome.amount * Number(outcome.occurence)}
-                          readOnly
-                          disabled
-                        />
-                      </td>
-                      <td className="border border-slate-600 p-1">
-                        <button
-                          className="px-1 text-center text-sm text-red-400 transition active:scale-90"
-                          onClick={() =>
-                            setOutcomes((prev) => {
-                              if (prev.length === 1) {
-                                return [
-                                  {
-                                    id: numberGen(),
-                                    amount: 0,
-                                    occurence: "1",
-                                  },
-                                ];
-                              }
-                              return prev.filter(
-                                (prevOutcome) => prevOutcome.id !== outcome.id,
-                              );
-                            })
-                          }
-                          tabIndex={modalState === "open" ? undefined : -1}
-                        >
-                          Hapus
-                        </button>
+                      <td className="border border-slate-600 px-4 py-3 text-right">
+                        {formatCurrency(calcProgTax.pphTerutang)}
                       </td>
                     </tr>
-                  ))}
-                  <tr>
-                    <td colSpan={5} className="px-1">
-                      <button
-                        type="button"
-                        onClick={addNewOutcomeRow}
-                        className="w-full rounded-md bg-slate-800 text-sm italic text-slate-400 transition hover:bg-opacity-70 hover:text-white active:scale-95"
-                        tabIndex={modalState === "open" ? undefined : -1}
-                      >
-                        Baris Baru +
-                      </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colSpan={3} className="text-right">
-                      Total
-                    </td>
-                    <td>
-                      <NumericFormat
-                        className="rounded-lg bg-slate-800 px-2 py-1 text-right disabled:bg-slate-900"
-                        thousandSeparator="."
-                        decimalSeparator=","
-                        prefix="Rp"
-                        value={outcomes.reduce(
-                          (acc, cur) =>
-                            acc + cur.amount * Number(cur.occurence),
-                          0,
-                        )}
-                        readOnly
-                        disabled
-                      />
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div className="mt-4 flex justify-end">
-            <button
-              type="button"
-              className="rounded-md bg-green-700 px-4 py-2 transition active:scale-90"
-              onClick={() => setModalState("closed")}
-              tabIndex={modalState === "open" ? undefined : -1}
-            >
-              Simpan dan Tutup
-            </button>
-          </div>
-        </div>
-      </div>
-      {/* Modal end */}
-
-      <p className="mt-3 text-slate-300">2. Pilih Golongan</p>
-      <select
-        className="min-w-min cursor-pointer rounded-lg bg-slate-700 px-4 py-3 transition-colors hover:bg-slate-600"
-        onChange={(v) =>
-          setPtkpKey(v.target.value as keyof typeof ptkpKategori)
-        }
-      >
-        {Object.entries(ptkpKategori).map(([key, value]) => (
-          <option key={key} value={key}>
-            {value.desc}
-          </option>
-        ))}
-      </select>
-
-      <h3 className="mt-10 text-xl">Rangkuman</h3>
-
-      <p className="mt-3 text-slate-300">Penghasilan bruto setahun</p>
-      <NumericFormat
-        className="rounded-lg bg-slate-800 px-2 py-1 disabled:bg-slate-900"
-        thousandSeparator="."
-        decimalSeparator=","
-        prefix="Rp"
-        value={penghasilanBrutoTahunan}
-        disabled
-        readOnly
-      />
-
-      <p className="mt-4 text-slate-300">Komponen pengurang setahun</p>
-      <NumericFormat
-        className="rounded-lg bg-slate-800 px-2 py-1 disabled:bg-slate-900"
-        thousandSeparator="."
-        decimalSeparator=","
-        prefix="Rp"
-        value={komponenPengurang}
-        readOnly
-        disabled
-      />
-
-      <p className="mt-4 text-slate-300">Penghasilan netto setahun</p>
-      <p className="text-sm text-slate-400">
-        (Penghasilan bruto setahun - Komponen pengurang setahun)
-      </p>
-      <NumericFormat
-        className="mt-1 rounded-lg bg-slate-800 px-2 py-1 disabled:bg-slate-900"
-        thousandSeparator="."
-        decimalSeparator=","
-        prefix="Rp"
-        value={penghasilanNettoTahunan}
-        readOnly
-        disabled
-      />
-
-      <p className="mt-4 text-slate-300">
-        Penghasilan Tidak Kena Pajak (PTKP) setahun
-      </p>
-      <p className="text-sm text-slate-400">
-        Berdasarkan golongan yang dipilih
-      </p>
-      <NumericFormat
-        className="mt-1 rounded-lg bg-slate-800 px-2 py-1 disabled:bg-slate-900"
-        thousandSeparator="."
-        decimalSeparator=","
-        prefix="Rp"
-        value={ptkp}
-        readOnly
-        disabled
-      />
-
-      <p className="mt-4 text-slate-300">Penghasilan kena pajak setahun</p>
-      <p className="text-sm text-slate-400">
-        (Penghasilan netto setahun - PTKP)
-      </p>
-      <NumericFormat
-        className="mt-1 rounded-lg bg-slate-800 px-2 py-1 disabled:bg-slate-900"
-        thousandSeparator="."
-        decimalSeparator=","
-        prefix="Rp"
-        value={pkp}
-        readOnly
-        disabled
-      />
-
-      {/* TABEL */}
-      <div className="mt-6 w-full overflow-scroll">
-        <table className="w-[600px] border-separate border-spacing-0 rounded-xl border border-slate-400 md:w-full">
-          <thead className="rounded-tl-xl">
-            <tr className="border-b-2 border-slate-400 text-lg">
-              <th className="rounded-tl-xl border border-slate-600 bg-slate-800 p-3 text-left">
-                Range Pajak Progresif
-              </th>
-              <th className="border border-slate-600 bg-slate-800 p-3">
-                Persentase
-              </th>
-              <th className="border border-slate-600 bg-slate-800 p-3 text-right">
-                Besaran Kena Pajak
-              </th>
-              <th className="rounded-tr-xl border border-slate-600 bg-slate-800 p-3 text-right">
-                PPh Terutang
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {calculatedProgressiveTaxes.map((calcProgTax, i) => {
-              return (
-                <tr key={i}>
-                  <td className="border border-slate-600 px-4 py-3">
-                    {calcProgTax.label}
+                  );
+                })}
+                <tr className="border-t-2 border-slate-400">
+                  <td colSpan={3} className="px-4 py-2 text-right">
+                    Pph Terutang per tahun
                   </td>
-
-                  <td className="border border-slate-600 px-4 py-3 text-center">
-                    {calcProgTax.persentasePajak * 100}%
-                  </td>
-                  <td className="border border-slate-600 px-4 py-3 text-right">
-                    {formatCurrency(calcProgTax.besaranKenaPajak)}
-                  </td>
-                  <td className="border border-slate-600 px-4 py-3 text-right">
-                    {formatCurrency(calcProgTax.pphTerutang)}
+                  <td className="px-4 py-2 text-right">
+                    {formatCurrency(pphTerutangPertahun)}
                   </td>
                 </tr>
-              );
-            })}
-            <tr className="border-t-2 border-slate-400">
-              <td colSpan={3} className="px-4 py-2 text-right">
-                Pph Terutang per tahun
-              </td>
-              <td className="px-4 py-2 text-right">
-                {formatCurrency(pphTerutangPertahun)}
-              </td>
-            </tr>
-            <tr>
-              <td colSpan={3} className="px-4 py-2 text-right">
-                PPh Terutang per bulan
-              </td>
-              <td className="px-4 py-2 text-right">
-                {formatCurrency(pphTerutangPerbulan)}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+                <tr>
+                  <td colSpan={3} className="px-4 py-2 text-right">
+                    PPh Terutang per bulan
+                  </td>
+                  <td className="px-4 py-2 text-right">
+                    {formatCurrency(pphTerutangPerbulan)}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-      {penghasilanBrutoTahunan ? (
-        <>
-          <h3 className="mt-10 text-xl">Kesimpulan</h3>
+          {penghasilanBrutoTahunan ? (
+            <>
+              <h3 className="mt-10 text-xl">Kesimpulan</h3>
 
-          <p className="mt-3 text-lg text-slate-300">
-            Pajak yang mesti dibayarkan per tahun adalah sebesar:{" "}
-            <span className="text-slate-200">
-              {formatCurrency(pphTerutangPertahun)}
-            </span>
-          </p>
+              <p className="mt-3 text-lg text-slate-300">
+                Pajak yang mesti dibayarkan per tahun adalah sebesar:{" "}
+                <span className="text-slate-200">
+                  {formatCurrency(pphTerutangPertahun)}
+                </span>
+              </p>
 
-          <p className="text-lg text-slate-300">
-            Atau per bulan sebesar:{" "}
-            <span className="text-xl text-slate-200">
-              {formatCurrency(pphTerutangPerbulan)}
-            </span>
-          </p>
+              <p className="text-lg text-slate-300">
+                Atau per bulan sebesar:{" "}
+                <span className="text-xl text-slate-200">
+                  {formatCurrency(pphTerutangPerbulan)}
+                </span>
+              </p>
+            </>
+          ) : (
+            <div className="h-8" />
+          )}
         </>
-      ) : (
-        <div className="h-8" />
-      )}
+      ) : null}
 
       <footer className="fixed bottom-2 right-2">
         <a
