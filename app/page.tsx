@@ -632,10 +632,21 @@ export default function Home() {
                 </span>
               </p>
 
-              <p className="text-lg text-slate-300">
+              <p className="mt-2 text-lg text-slate-300">
                 Atau per bulan sebesar:{" "}
                 <span className="text-xl text-slate-200">
                   {formatCurrency(pphTerutangPerbulan)}
+                </span>
+              </p>
+
+              <p className="mt-2 text-lg text-slate-300">
+                Pajak Anda adalah sebesar{" "}
+                <span className="text-slate-200">
+                  {(
+                    (pphTerutangPertahun / penghasilanBrutoTahunan) *
+                    100
+                  ).toFixed(2)}
+                  % dari penghasilan bruto Anda
                 </span>
               </p>
             </div>
