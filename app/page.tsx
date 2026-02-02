@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { NumericFormat, numericFormatter } from "react-number-format";
-import { numberGen } from "./helpers";
+import { useState } from 'react';
+import { NumericFormat, numericFormatter } from 'react-number-format';
+import { numberGen } from './helpers';
 
 type ProgressiveTax = {
   batasBawah: number;
@@ -17,41 +17,41 @@ type PajakTerhitung = {
 };
 
 const ptkpKategori = {
-  "TK/0": {
-    desc: "Tidak Kawin Tanpa Tanggungan",
+  'TK/0': {
+    desc: 'Tidak Kawin Tanpa Tanggungan',
     tarif: 54_000_000,
   },
-  "TK/1": {
-    desc: "Tidak Kawin 1 Tanggungan",
+  'TK/1': {
+    desc: 'Tidak Kawin 1 Tanggungan',
     tarif: 58_500_000,
   },
-  "TK/2": {
-    desc: "Tidak Kawin 2 Tanggungan",
+  'TK/2': {
+    desc: 'Tidak Kawin 2 Tanggungan',
     tarif: 63_000_000,
   },
-  "TK/3": {
-    desc: "Tidak Kawin 3 Tanggunan",
+  'TK/3': {
+    desc: 'Tidak Kawin 3 Tanggunan',
     tarif: 67_500_000,
   },
-  "K/0": { tarif: 58_500_000, desc: "Kawin Tanpa Tanggungan" },
-  "K/1": { tarif: 63_000_000, desc: "Kawin 1 Tanggungan" },
-  "K/2": { tarif: 67_500_000, desc: "Kawin 2 Tanggungan" },
-  "K/3": { tarif: 72_000_000, desc: "Kawin 3 Tanggungan" },
-  "K/I/0": {
+  'K/0': { tarif: 58_500_000, desc: 'Kawin Tanpa Tanggungan' },
+  'K/1': { tarif: 63_000_000, desc: 'Kawin 1 Tanggungan' },
+  'K/2': { tarif: 67_500_000, desc: 'Kawin 2 Tanggungan' },
+  'K/3': { tarif: 72_000_000, desc: 'Kawin 3 Tanggungan' },
+  'K/I/0': {
     tarif: 112_500_000,
-    desc: "Kawin dan Istri Digabung, Tanpa Tanggungan",
+    desc: 'Kawin dan Istri Digabung, Tanpa Tanggungan',
   },
-  "K/I/1": {
+  'K/I/1': {
     tarif: 117_000_000,
-    desc: "Kawin dan Istri Digabung, 1 Tanggungan",
+    desc: 'Kawin dan Istri Digabung, 1 Tanggungan',
   },
-  "K/I/2": {
+  'K/I/2': {
     tarif: 121_500_000,
-    desc: "Kawin dan Istri Digabung, 2 Tanggungan",
+    desc: 'Kawin dan Istri Digabung, 2 Tanggungan',
   },
-  "K/I/3": {
+  'K/I/3': {
     tarif: 126_000_000,
-    desc: "Kawin dan Istri Digabung, 3 Tanggungan",
+    desc: 'Kawin dan Istri Digabung, 3 Tanggungan',
   },
 };
 
@@ -63,36 +63,36 @@ const progressiveTaxes: ProgressiveTax[] = [
     batasBawah: 0,
     batasAtas: 60_000_000,
     persentasePajak: 0.05,
-    label: "0 - Rp60juta",
+    label: '0 - Rp60juta',
   },
   {
     batasBawah: 60_000_000,
     batasAtas: 250_000_000,
     persentasePajak: 0.15,
-    label: "Rp60juta - Rp250juta",
+    label: 'Rp60juta - Rp250juta',
   },
   {
     batasBawah: 250_000_000,
     batasAtas: 500_000_000,
     persentasePajak: 0.25,
-    label: "250juta - Rp500juta",
+    label: '250juta - Rp500juta',
   },
   {
     batasBawah: 500_000_000,
     batasAtas: 5_000_000_000,
     persentasePajak: 0.3,
-    label: "500juta - Rp5M",
+    label: '500juta - Rp5M',
   },
   {
     batasBawah: 5_000_000_000,
     batasAtas: Infinity,
     persentasePajak: 0.35,
-    label: "> Rp5M",
+    label: '> Rp5M',
   },
 ];
 
 function calculateProgressiveTax(pkp: number) {
-  let newArr: Array<ProgressiveTax & PajakTerhitung> = [];
+  const newArr: Array<ProgressiveTax & PajakTerhitung> = [];
   for (let i = 0; i < progressiveTaxes.length; i++) {
     const cur = progressiveTaxes[i];
 
@@ -133,28 +133,28 @@ type Income = {
 };
 
 export default function Home() {
-  const [showResult, setShowResult] = useState<"closed" | "open">("closed");
+  const [showResult, setShowResult] = useState<'closed' | 'open'>('closed');
   const [incomes, setIncomes] = useState<Income[]>([
-    { id: numberGen(), amount: 0, occurence: "1" },
+    { id: numberGen(), amount: 0, occurence: '1' },
   ]);
 
   const [outcomes, setOutcomes] = useState<Income[]>([
-    { id: numberGen(), amount: 0, occurence: "1" },
+    { id: numberGen(), amount: 0, occurence: '1' },
   ]);
 
   function addNewIncomeRow() {
     setIncomes((prev) =>
-      prev.concat({ id: numberGen(), amount: 0, occurence: "1" }),
+      prev.concat({ id: numberGen(), amount: 0, occurence: '1' }),
     );
   }
 
   function addNewOutcomeRow() {
     setOutcomes((prev) =>
-      prev.concat({ id: numberGen(), amount: 0, occurence: "1" }),
+      prev.concat({ id: numberGen(), amount: 0, occurence: '1' }),
     );
   }
 
-  const [ptkpKey, setPtkpKey] = useState<keyof typeof ptkpKategori>("TK/0");
+  const [ptkpKey, setPtkpKey] = useState<keyof typeof ptkpKategori>('TK/0');
 
   const penghasilanBrutoTahunan = incomes.reduce(
     (acc, cur) => acc + cur.amount * Number(cur.occurence),
@@ -183,7 +183,7 @@ export default function Home() {
           Kalkulator penghitung pajak progresif PPh 21 pekerja Indonesia
         </h2>
         <p className="mt-2 text-left text-sm text-slate-400 sm:text-center">
-          Pajakin gratis dan{" "}
+          Pajakin gratis dan{' '}
           <a
             href="https://github.com/AsadSaleh/pajakin/"
             className="hover:underline"
@@ -280,11 +280,12 @@ export default function Home() {
                   <td className="border border-slate-600 p-1">
                     <button
                       className="px-1 text-center text-sm text-red-400 transition active:scale-90"
+                      type="button"
                       onClick={() =>
                         setIncomes((prev) => {
                           if (prev.length === 1) {
                             return [
-                              { id: numberGen(), amount: 0, occurence: "1" },
+                              { id: numberGen(), amount: 0, occurence: '1' },
                             ];
                           }
                           return prev.filter(
@@ -412,6 +413,7 @@ export default function Home() {
                     <td className="border border-slate-600 p-1">
                       <button
                         className="px-1 text-center text-sm text-red-400 transition active:scale-90"
+                        type="button"
                         onClick={() =>
                           setOutcomes((prev) => {
                             if (prev.length === 1) {
@@ -419,7 +421,7 @@ export default function Home() {
                                 {
                                   id: numberGen(),
                                   amount: 0,
-                                  occurence: "1",
+                                  occurence: '1',
                                 },
                               ];
                             }
@@ -486,13 +488,13 @@ export default function Home() {
         <button
           type="button"
           className="mt-12 w-full rounded-md bg-green-700 px-4 py-4 transition active:scale-95"
-          onClick={() => setShowResult("open")}
+          onClick={() => setShowResult('open')}
         >
           Tampilkan Hasil Perhitungan
         </button>
       </div>
 
-      {showResult === "open" ? (
+      {showResult === 'open' ? (
         <>
           <h3 className="mt-10 text-2xl">Hasil Perhitungan</h3>
 
@@ -584,7 +586,7 @@ export default function Home() {
               <tbody>
                 {calculatedProgressiveTaxes.map((calcProgTax, i) => {
                   return (
-                    <tr key={i}>
+                    <tr key={calcProgTax.label}>
                       <td className="border border-slate-600 px-4 py-3">
                         {calcProgTax.label}
                       </td>
@@ -625,29 +627,38 @@ export default function Home() {
             <div className="mt-8 rounded-xl bg-slate-800 p-4">
               <h3 className="text-xl">Kesimpulan</h3>
 
-              <p className="mt-2 text-lg text-slate-300">
-                Pajak yang mesti dibayarkan per tahun adalah sebesar:{" "}
-                <span className="text-slate-200">
+              <p className="mt-2 text-slate-300">Pajak kamu per tahun:&nbsp;</p>
+              <p>
+                <span className="text-lg">
                   {formatCurrency(pphTerutangPertahun)}
                 </span>
               </p>
 
-              <p className="mt-2 text-lg text-slate-300">
-                Atau per bulan sebesar:{" "}
-                <span className="text-xl text-slate-200">
-                  {formatCurrency(pphTerutangPerbulan)}
-                </span>
+              <p className="mt-6 text-base text-slate-300">
+                atau per bulan sebesar:{' '}
+              </p>
+              <span className="text-xl">
+                {formatCurrency(pphTerutangPerbulan)}
+              </span>
+
+              <p className="mt-6 text-base text-slate-300">
+                Ketika dirata-rata, penghasil kamu perbulan after tax:
+              </p>
+              <p className="text-lg">
+                {formatCurrency(
+                  (penghasilanBrutoTahunan - pphTerutangPertahun) / 12,
+                )}
               </p>
 
-              <p className="mt-2 text-lg text-slate-300">
-                Pajak Anda adalah sebesar{" "}
-                <span className="text-slate-200">
-                  {(
-                    (pphTerutangPertahun / penghasilanBrutoTahunan) *
-                    100
-                  ).toFixed(2)}
-                  % dari penghasilan bruto Anda
-                </span>
+              <p className="mt-6 text-slate-300">
+                Persentase Pajak terhadap penghasilan:
+              </p>
+              <p className="text-lg ">
+                {(
+                  (pphTerutangPertahun / penghasilanBrutoTahunan) *
+                  100
+                ).toFixed(2)}
+                % dari penghasilan bruto Anda
               </p>
             </div>
           ) : (
@@ -672,13 +683,13 @@ export default function Home() {
 
 function formatCurrency(input: number | string) {
   input = input.toString();
-  if (input === "0") {
-    return "0";
+  if (input === '0') {
+    return '0';
   }
   return numericFormatter(input, {
-    prefix: "Rp",
-    thousandSeparator: ".",
-    decimalSeparator: ",",
+    prefix: 'Rp',
+    thousandSeparator: '.',
+    decimalSeparator: ',',
     decimalScale: 2,
   });
 }

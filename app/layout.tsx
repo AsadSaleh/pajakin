@@ -1,12 +1,12 @@
-import "./globals.css";
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import './globals.css';
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: "Pajakin - Kalkulator pajak",
-  description: "Kalkulator penghitung pajak progresif PPh 21 pekerja Indonesia",
+  title: 'Pajakin - Kalkulator pajak',
+  description: 'Kalkulator penghitung pajak progresif PPh 21 pekerja Indonesia',
 };
 
 export default function RootLayout({
