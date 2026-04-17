@@ -130,6 +130,7 @@ type Income = {
   amount: number;
   desc?: string;
   occurence: string;
+  specialType?: 'jht' | 'jp' | 'bpjsKesehatan';
 };
 
 export default function Home() {
@@ -151,6 +152,52 @@ export default function Home() {
   function addNewOutcomeRow() {
     setOutcomes((prev) =>
       prev.concat({ id: numberGen(), amount: 0, occurence: '1' }),
+    );
+  }
+
+  function addBPJSKesehatan() {
+    // by the rules, bpjs kesehatan is 1% with maximum considered income of 12.000.000
+    setOutcomes((prev) =>
+      prev.some((outcome) => outcome.specialType === 'bpjsKesehatan')
+        ? prev
+        : prev.concat({
+            id: numberGen(),
+            amount: Math.min(incomes[0].amount, 12_000_000) * 0.01,
+            occurence: '1',
+            desc: 'BPJS Kesehatan (1%)',
+            specialType: 'bpjsKesehatan',
+          }),
+    );
+  }
+
+  function addJHT() {
+    // by the rules, jht is 2% without cap
+    setOutcomes((prev) => {
+      if (prev.some((outcome) => outcome.specialType === 'jht')) {
+        return prev;
+      }
+      return prev.concat({
+        id: numberGen(),
+        amount: incomes[0].amount * 0.02,
+        occurence: '1',
+        desc: 'JHT (2%)',
+        specialType: 'jht',
+      });
+    });
+  }
+
+  function addJP() {
+    // by the rules, jp is 1% with cap of 10.547.000
+    setOutcomes((prev) =>
+      prev.some((outcome) => outcome.specialType === 'jp')
+        ? prev
+        : prev.concat({
+            id: numberGen(),
+            amount: Math.min(incomes[0].amount * 0.01, 10_547_000),
+            occurence: '1',
+            desc: 'JP (1%)',
+            specialType: 'jp',
+          }),
     );
   }
 
@@ -186,7 +233,7 @@ export default function Home() {
           Pajakin gratis dan{' '}
           <a
             href="https://github.com/AsadSaleh/pajakin/"
-            className="hover:underline"
+            className="underline hover:text-slate-300"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -338,6 +385,45 @@ export default function Home() {
             Komponen biaya yang mengurangi pajak contohnya: Biaya Jabatan, iuran
             JHT, iuran JP, dan sejenisnya.
           </p>
+
+          <div className="mt-2">
+            <h4 className="text-sm">Click to auto input:</h4>
+            <div className="flex gap-2 mt-0.5">
+              <button
+                type="button"
+                onClick={addBPJSKesehatan}
+                className="active:scale-95 hover:bg-slate-700 transition text-xs bg-slate-800 px-4 py-1 rounded-md data-[selected=true]:bg-white data-[selected=true]:text-black"
+                data-selected={outcomes.some(
+                  (outcome) => outcome.specialType === 'bpjsKesehatan',
+                )}
+                title="BPJS Kesehatan (Jaminan Kesehatan) sebesar 1% dari gaji bulanan dengan batas maksimal penghasilan 12.000.000"
+              >
+                Masukkan BPJS Kesehatan (1%)
+              </button>
+              <button
+                type="button"
+                onClick={addJHT}
+                className="active:scale-95 hover:bg-slate-700 transition text-xs bg-slate-800 px-4 py-1 rounded-md data-[selected=true]:bg-white data-[selected=true]:text-black"
+                data-selected={outcomes.some(
+                  (outcome) => outcome.specialType === 'jht',
+                )}
+                title="JHT (Jaminan Hari Tua) sebesar 2% dari gaji bulanan tanpa batas maksimal"
+              >
+                Masukkan JHT (2%)
+              </button>
+              <button
+                type="button"
+                onClick={addJP}
+                className="active:scale-95 hover:bg-slate-700 transition text-xs bg-slate-800 px-4 py-1 rounded-md data-[selected=true]:bg-white data-[selected=true]:text-black"
+                data-selected={outcomes.some(
+                  (outcome) => outcome.specialType === 'jp',
+                )}
+                title="JP (Jaminan Pensiun) sebesar 1% dari gaji bulanan dengan batas maksimal 10.547.000"
+              >
+                Masukkan JP (1%)
+              </button>
+            </div>
+          </div>
           <div className="w-full overflow-scroll">
             <table className="mt-2 w-[500px] border-separate border-spacing-0 rounded-xl border border-slate-500 md:w-full">
               <thead>
@@ -623,7 +709,7 @@ export default function Home() {
             </table>
           </div>
 
-          {penghasilanBrutoTahunan ? (
+          {/* {penghasilanBrutoTahunan ? (
             <div className="mt-8 rounded-xl bg-slate-800 p-4">
               <h3 className="text-xl">Kesimpulan</h3>
 
@@ -663,18 +749,84 @@ export default function Home() {
             </div>
           ) : (
             <div className="h-8" />
+          )} */}
+
+          {penghasilanBrutoTahunan ? (
+            <div className="mt-8 rounded-xl bg-slate-800 p-8">
+              <h3 className="text-xl">Kesimpulan</h3>
+
+              <p className="mt-2 text-slate-300">Pajak kamu:</p>
+              <div className="flex gap-8 items-center">
+                <div className="p-6 rounded-md border mt-1 min-w-[280px]">
+                  <p>Yearly Tax</p>
+                  <span className="text-2xl font-bold">
+                    {formatCurrency(pphTerutangPertahun)}
+                  </span>
+                  <span className="text-xs ml-2">/ Tahun</span>
+                </div>
+                <div className="p-6 rounded-md border mt-1 min-w-[280px]">
+                  <p>Monthly Tax</p>
+                  <span className="text-2xl font-bold">
+                    {formatCurrency(pphTerutangPerbulan)}
+                  </span>
+                  <span className="text-sm ml-2">/ Bulan</span>
+                </div>
+              </div>
+
+              <p className=" text-slate-300 mt-6">
+                Ketika dirata-rata, penghasilan kamu:
+              </p>
+              <div className="flex gap-8 items-center">
+                <div className="p-6 rounded-md border mt-1 min-w-[280px]">
+                  <p>Income bruto before tax</p>
+                  <span className="text-2xl font-bold">
+                    {formatCurrency(penghasilanBrutoTahunan / 12)}
+                  </span>
+                  <span className="text-sm ml-2">/ Bulan</span>
+                </div>
+                <div className="p-6 rounded-md border mt-1 min-w-[280px]">
+                  <p>Income netto after tax</p>
+                  <span className="text-2xl font-bold">
+                    {formatCurrency(
+                      (penghasilanBrutoTahunan - pphTerutangPertahun) / 12,
+                    )}
+                  </span>
+                  <span className="text-xs ml-2">/ Bulan</span>
+                </div>
+              </div>
+
+              <p className=" text-slate-300 mt-6">
+                Secara total, rata-rata pajak kamu adalah:
+              </p>
+
+              <div className="flex ">
+                <div className="p-6 rounded-md border mt-1 min-w-[280px]">
+                  <p>Avg. tax percentage</p>
+                  <span className="text-2xl font-bold">
+                    {formatNormalNumberID(
+                      (pphTerutangPertahun / penghasilanBrutoTahunan) * 100,
+                    )}
+                    <span className="text-slate-400 text-lg">%</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="h-8" />
           )}
         </>
       ) : null}
 
-      <footer className="fixed bottom-2 right-2">
+      <footer className="text-center text-sm text-slate-400 mt-20">
+        Terima kasih telah menggunakan Pajakin! Untuk melihat karya-karya
+        lainnya, silahkan kunjungi{' '}
         <a
           href="https://asadghanim.vercel.app"
           target="_blank"
           rel="noopener noreferrer"
-          className="rounded-md bg-slate-600 p-1 text-xs transition-all hover:bg-slate-500"
+          className="underline hover:text-slate-300"
         >
-          By As&apos;ad Ghanim
+          As&apos;ad personal website
         </a>
       </footer>
     </main>
@@ -688,6 +840,18 @@ function formatCurrency(input: number | string) {
   }
   return numericFormatter(input, {
     prefix: 'Rp',
+    thousandSeparator: '.',
+    decimalSeparator: ',',
+    decimalScale: 0,
+  });
+}
+
+function formatNormalNumberID(input: number | string) {
+  input = input.toString();
+  if (input === '0') {
+    return '0';
+  }
+  return numericFormatter(input, {
     thousandSeparator: '.',
     decimalSeparator: ',',
     decimalScale: 2,
