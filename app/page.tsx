@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { NumericFormat, numericFormatter } from 'react-number-format';
 import { numberGen } from './helpers';
 
@@ -223,7 +223,7 @@ export default function Home() {
   const pphTerutangPerbulan = pphTerutangPertahun / 12;
 
   return (
-    <main className="mx-auto max-w-lg px-2 py-8 pb-20 md:max-w-2xl md:py-12 lg:max-w-5xl lg:px-0">
+    <main className="mx-auto px-4 py-8 pb-20 sm:px-6 md:max-w-2xl md:px-2 md:py-12 lg:max-w-5xl lg:px-0">
       <div className="mx-auto mb-4 text-center">
         <h1 className="text-center text-3xl">Pajakin</h1>
         <h2 className="mt-4 text-left text-xl sm:text-center">
@@ -255,7 +255,7 @@ export default function Home() {
             Komponen biaya yang menambah pajak contohnya: Gaji bulanan, komisi
             penjualan, THR, bonus, dan sejenisnya.
           </p>
-          <table className="mt-2 w-[500px] border-separate border-spacing-0 rounded-xl border border-slate-500 md:w-full">
+          <table className="mt-2 w-full border-separate border-spacing-0 rounded-xl border border-slate-500">
             <thead>
               <tr>
                 <th className="w-1/4">Nominal</th>
@@ -425,7 +425,7 @@ export default function Home() {
             </div>
           </div>
           <div className="w-full overflow-scroll">
-            <table className="mt-2 w-[500px] border-separate border-spacing-0 rounded-xl border border-slate-500 md:w-full">
+            <table className="mt-2 w-full border-separate border-spacing-0 rounded-xl border border-slate-500">
               <thead>
                 <tr>
                   <th className="w-1/4">Nominal</th>
@@ -584,7 +584,16 @@ export default function Home() {
         <>
           <h3 className="mt-10 text-2xl">Hasil Perhitungan</h3>
 
-          <p className="mt-3 text-slate-300">Penghasilan bruto setahun</p>
+          <p className="mt-3 text-slate-300">
+            Penghasilan bruto setahun
+            <InfoTooltip label="Penjelasan Penghasilan bruto setahun">
+              Penjumlahan seluruh penghasilan (Nominal × Pengali) dari tabel{' '}
+              <span className="text-slate-100">Input Penghasilan</span>.
+              <span className="mt-2 block text-slate-100">
+                = {formatCurrency(penghasilanBrutoTahunan)}
+              </span>
+            </InfoTooltip>
+          </p>
           <NumericFormat
             className="rounded-lg bg-slate-800 px-2 py-1 disabled:bg-slate-900"
             thousandSeparator="."
@@ -595,7 +604,17 @@ export default function Home() {
             readOnly
           />
 
-          <p className="mt-4 text-slate-300">Komponen pengurang setahun</p>
+          <p className="mt-4 text-slate-300">
+            Komponen pengurang setahun
+            <InfoTooltip label="Penjelasan Komponen pengurang setahun">
+              Penjumlahan seluruh komponen pengurang (Nominal × Pengali) dari
+              tabel{' '}
+              <span className="text-slate-100">Input Komponen pengurang</span>.
+              <span className="mt-2 block text-slate-100">
+                = {formatCurrency(komponenPengurang)}
+              </span>
+            </InfoTooltip>
+          </p>
           <NumericFormat
             className="rounded-lg bg-slate-800 px-2 py-1 disabled:bg-slate-900"
             thousandSeparator="."
@@ -606,7 +625,19 @@ export default function Home() {
             disabled
           />
 
-          <p className="mt-4 text-slate-300">Penghasilan netto setahun</p>
+          <p className="mt-4 text-slate-300">
+            Penghasilan netto setahun
+            <InfoTooltip label="Penjelasan Penghasilan netto setahun">
+              Penghasilan bruto setahun dikurangi Komponen pengurang setahun.
+              <span className="mt-2 block text-slate-100">
+                = {formatCurrency(penghasilanBrutoTahunan)} −{' '}
+                {formatCurrency(komponenPengurang)}
+              </span>
+              <span className="block text-slate-100">
+                = {formatCurrency(penghasilanNettoTahunan)}
+              </span>
+            </InfoTooltip>
+          </p>
           <p className="text-sm text-slate-400">
             (Penghasilan bruto setahun - Komponen pengurang setahun)
           </p>
@@ -622,6 +653,17 @@ export default function Home() {
 
           <p className="mt-4 text-slate-300">
             Penghasilan Tidak Kena Pajak (PTKP) setahun
+            <InfoTooltip label="Penjelasan PTKP setahun">
+              Batas penghasilan yang tidak dikenai pajak sesuai golongan
+              tanggungan yang dipilih:{' '}
+              <span className="text-slate-100">
+                {ptkpKey} — {ptkpKategori[ptkpKey].desc}
+              </span>
+              .
+              <span className="mt-2 block text-slate-100">
+                = {formatCurrency(ptkp)}
+              </span>
+            </InfoTooltip>
           </p>
           <p className="text-sm text-slate-400">
             Berdasarkan golongan yang dipilih
@@ -636,7 +678,20 @@ export default function Home() {
             disabled
           />
 
-          <p className="mt-4 text-slate-300">Penghasilan kena pajak setahun</p>
+          <p className="mt-4 text-slate-300">
+            Penghasilan kena pajak setahun
+            <InfoTooltip label="Penjelasan Penghasilan kena pajak setahun">
+              Penghasilan netto setahun dikurangi PTKP (minimal Rp0). Inilah
+              dasar perhitungan pajak progresif di bawah.
+              <span className="mt-2 block text-slate-100">
+                = {formatCurrency(penghasilanNettoTahunan)} −{' '}
+                {formatCurrency(ptkp)}
+              </span>
+              <span className="block text-slate-100">
+                = {formatCurrency(pkp)}
+              </span>
+            </InfoTooltip>
+          </p>
           <p className="text-sm text-slate-400">
             (Penghasilan netto setahun - PTKP)
           </p>
@@ -652,7 +707,7 @@ export default function Home() {
 
           {/* TABEL */}
           <div className="mt-6 w-full overflow-scroll">
-            <table className="w-[600px] border-separate border-spacing-0 rounded-xl border border-slate-400 md:w-full">
+            <table className="w-full border-separate border-spacing-0 rounded-xl border border-slate-400">
               <thead>
                 <tr className="border-b-2 border-slate-400 text-lg">
                   <th className="rounded-tl-xl border border-slate-600 bg-slate-800 p-3 text-left">
@@ -830,6 +885,33 @@ export default function Home() {
         </a>
       </footer>
     </main>
+  );
+}
+
+function InfoTooltip({
+  label,
+  children,
+}: {
+  label?: string;
+  children: ReactNode;
+}) {
+  return (
+    <span className="group relative ml-1.5 inline-flex align-middle">
+      <button
+        type="button"
+        aria-label={label ?? 'Penjelasan perhitungan'}
+        className="inline-flex h-4 w-4 cursor-help items-center justify-center rounded-full border border-slate-500 text-[10px] font-semibold leading-none text-slate-400 transition hover:border-slate-300 hover:text-slate-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+      >
+        i
+      </button>
+      <span
+        role="tooltip"
+        className="pointer-events-none absolute bottom-full left-0 z-30 mb-2 w-64 max-w-[80vw] rounded-lg border border-slate-600 bg-slate-900 p-3 text-left text-xs font-normal leading-relaxed text-slate-300 opacity-0 shadow-xl transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100"
+      >
+        {children}
+        <span className="absolute left-2 top-full h-0 w-0 border-4 border-transparent border-t-slate-600" />
+      </span>
+    </span>
   );
 }
 
