@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { type ReactNode, useState } from 'react';
 import { NumericFormat, numericFormatter } from 'react-number-format';
 import { numberGen } from './helpers';
@@ -246,6 +247,15 @@ export default function Home() {
           hanya disimpan di browser Anda.
         </p>
       </div>
+
+      <nav className="mt-6 flex justify-center gap-2 text-sm">
+        <Link
+          href="/ter"
+          className="rounded-md bg-slate-800 px-4 py-2 transition hover:bg-slate-700"
+        >
+          Kalkulator Bulanan (TER) →
+        </Link>
+      </nav>
 
       <div className="mt-12 flex items-center justify-between"></div>
       <div className="mt-4">
