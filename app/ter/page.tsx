@@ -5,17 +5,28 @@ import { type ReactNode, useState } from 'react';
 import { NumericFormat, numericFormatter } from 'react-number-format';
 import {
   findTerBracket,
+  findTerGrossUp,
   type TerCategory,
   terPtkpKategori,
   terTables,
 } from '../ter-rates';
 
+type Metode = 'biasa' | 'grossUp';
+
 export default function TerPage() {
   const [ptkpKey, setPtkpKey] = useState<keyof typeof terPtkpKategori>('TK/0');
-  const [brutoBulanan, setBrutoBulanan] = useState<number>(0);
+  const [metode, setMetode] = useState<Metode>('biasa');
+  const [input, setInput] = useState<number>(0);
 
+  const isGrossUp = metode === 'grossUp';
   const category = terPtkpKategori[ptkpKey].category;
-  const bracket = findTerBracket(category, brutoBulanan);
+
+  // Metode biasa: input adalah bruto, pajak dipotong dari bruto.
+  // Metode gross up: input adalah take home pay, perusahaan menambah tunjangan
+  // pajak sehingga bruto naik dan netto tetap sebesar input.
+  const grossUp = findTerGrossUp(category, input);
+  const bracket = isGrossUp ? grossUp.bracket : findTerBracket(category, input);
+  const brutoBulanan = isGrossUp ? grossUp.gross : input;
   const pphBulanan = brutoBulanan * bracket.rate;
   const nettoBulanan = brutoBulanan - pphBulanan;
 
@@ -70,11 +81,56 @@ export default function TerPage() {
       </div>
 
       <div className="mt-10">
-        <h4 className="text-2xl">2. Penghasilan Bruto Bulanan</h4>
+        <h4 className="text-2xl">2. Metode Perhitungan</h4>
         <p className="text-sm text-slate-400">
-          Total penghasilan bruto sebulan: gaji pokok, tunjangan, dan komponen
-          lainnya. Tidak perlu dikurangi biaya jabatan atau iuran — pengurang
-          ini sudah diperhitungkan di dalam tarif TER.
+          Pilih siapa yang menanggung PPh 21-nya.
+        </p>
+        <div className="mt-2 flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => setMetode('biasa')}
+            data-selected={!isGrossUp}
+            className="flex-1 rounded-lg bg-slate-800 px-4 py-3 text-left text-sm transition hover:bg-slate-700 active:scale-95 data-[selected=true]:bg-white data-[selected=true]:text-black"
+          >
+            <span className="block font-semibold">Biasa (Gross)</span>
+            <span className="block text-xs opacity-70">
+              PPh 21 dipotong dari gaji karyawan
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setMetode('grossUp')}
+            data-selected={isGrossUp}
+            className="flex-1 rounded-lg bg-slate-800 px-4 py-3 text-left text-sm transition hover:bg-slate-700 active:scale-95 data-[selected=true]:bg-white data-[selected=true]:text-black"
+          >
+            <span className="block font-semibold">Gross Up</span>
+            <span className="block text-xs opacity-70">
+              Perusahaan memberi tunjangan pajak sebesar PPh 21
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <div className="mt-10">
+        <h4 className="text-2xl">
+          {isGrossUp
+            ? '3. Take Home Pay Bulanan yang Diinginkan'
+            : '3. Penghasilan Bruto Bulanan'}
+        </h4>
+        <p className="text-sm text-slate-400">
+          {isGrossUp ? (
+            <>
+              Gaji bersih sebulan yang ingin diterima karyawan. Tunjangan pajak
+              akan dihitung mundur agar setelah dipotong PPh 21, sisanya persis
+              sebesar angka ini.
+            </>
+          ) : (
+            <>
+              Total penghasilan bruto sebulan: gaji pokok, tunjangan, dan
+              komponen lainnya. Tidak perlu dikurangi biaya jabatan atau iuran —
+              pengurang ini sudah diperhitungkan di dalam tarif TER.
+            </>
+          )}
         </p>
         <NumericFormat
           className="mt-2 w-full rounded-lg bg-slate-800 px-3 py-3 text-right text-lg"
@@ -82,8 +138,8 @@ export default function TerPage() {
           decimalSeparator=","
           prefix="Rp"
           placeholder="Rp0"
-          value={brutoBulanan || ''}
-          onValueChange={(e) => setBrutoBulanan(e.floatValue ?? 0)}
+          value={input || ''}
+          onValueChange={(e) => setInput(e.floatValue ?? 0)}
         />
       </div>
 
@@ -97,6 +153,13 @@ export default function TerPage() {
             Tarif dipilih dari tabel TER Kategori{' '}
             <span className="text-slate-100">{category}</span> sesuai lapisan
             penghasilan bruto bulanan Anda.
+            {isGrossUp && (
+              <span className="mt-2 block">
+                Pada metode gross up, tarif dicari mundur dari take home pay:
+                bruto = netto ÷ (1 − tarif), dengan tarif yang konsisten dengan
+                lapisan tempat brutonya jatuh.
+              </span>
+            )}
             <span className="mt-2 block text-slate-100">
               Penghasilan {formatCurrency(brutoBulanan)} → tarif{' '}
               {formatPercent(bracket.rate)}
@@ -106,8 +169,30 @@ export default function TerPage() {
         <p className="text-3xl font-bold">{formatPercent(bracket.rate)}</p>
 
         <div className="mt-6 flex flex-wrap gap-6">
+          {isGrossUp && (
+            <div className="min-w-[260px] flex-1 rounded-md border p-6">
+              <p className="text-slate-300">Bruto setelah gross up</p>
+              <InfoTooltipBlock label="Penjelasan bruto setelah gross up">
+                Take home pay dibagi (1 − Tarif Efektif), yaitu gaji ditambah
+                tunjangan pajak.
+                <span className="mt-2 block text-slate-100">
+                  = {formatCurrency(input)} ÷ (1 − {formatPercent(bracket.rate)}
+                  )
+                </span>
+                <span className="block text-slate-100">
+                  = {formatCurrency(brutoBulanan)}
+                </span>
+              </InfoTooltipBlock>
+              <span className="text-2xl font-bold">
+                {formatCurrency(brutoBulanan)}
+              </span>
+              <span className="ml-2 text-sm">/ Bulan</span>
+            </div>
+          )}
           <div className="min-w-[260px] flex-1 rounded-md border p-6">
-            <p className="text-slate-300">PPh 21 per bulan</p>
+            <p className="text-slate-300">
+              {isGrossUp ? 'Tunjangan pajak (PPh 21)' : 'PPh 21 per bulan'}
+            </p>
             <InfoTooltipBlock label="Penjelasan PPh 21 per bulan">
               PPh 21 bulanan = Penghasilan bruto bulanan × Tarif Efektif.
               <span className="mt-2 block text-slate-100">
@@ -116,6 +201,12 @@ export default function TerPage() {
               <span className="block text-slate-100">
                 = {formatCurrency(pphBulanan)}
               </span>
+              {isGrossUp && (
+                <span className="mt-2 block">
+                  Jumlah ini ditanggung perusahaan sebagai tunjangan pajak,
+                  sehingga tidak mengurangi take home pay karyawan.
+                </span>
+              )}
             </InfoTooltipBlock>
             <span className="text-2xl font-bold">
               {formatCurrency(pphBulanan)}
@@ -139,6 +230,17 @@ export default function TerPage() {
             <span className="ml-2 text-sm">/ Bulan</span>
           </div>
         </div>
+
+        {isGrossUp && (
+          <p className="mt-6 rounded-md bg-slate-900 p-4 text-sm text-slate-400">
+            <span className="text-slate-200">Metode gross up:</span> perusahaan
+            memberi tunjangan pajak {formatCurrency(pphBulanan)} sehingga bruto
+            yang dilaporkan menjadi {formatCurrency(brutoBulanan)} dan karyawan
+            tetap menerima {formatCurrency(nettoBulanan)}. Tunjangan pajak ini
+            termasuk objek PPh 21 (sudah diperhitungkan di atas) dan dapat
+            dibiayakan oleh perusahaan.
+          </p>
+        )}
 
         <p className="mt-6 rounded-md bg-slate-900 p-4 text-sm text-slate-400">
           <span className="text-slate-200">Catatan:</span> TER hanya dipakai

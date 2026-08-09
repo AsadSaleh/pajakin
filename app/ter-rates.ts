@@ -197,3 +197,33 @@ export function findTerBracket(
     table[table.length - 1]
   );
 }
+
+/**
+ * Metode gross up: mencari penghasilan bruto bulanan yang, setelah dipotong
+ * PPh 21 dengan tarif efektifnya sendiri, menghasilkan take home pay sebesar
+ * `monthlyNet`. Bruto = Netto / (1 - tarif), dengan tarif yang dipakai harus
+ * konsisten dengan lapisan tempat bruto tersebut jatuh.
+ *
+ * Karena tarif naik seiring bruto, tiap lapisan saling menutupi (tidak ada
+ * celah), sehingga selalu ada solusi. Bila ada lebih dari satu solusi, dipilih
+ * bruto terkecil (tarif terendah).
+ */
+export function findTerGrossUp(
+  category: TerCategory,
+  monthlyNet: number,
+): { bracket: TerBracket; gross: number } {
+  const table = terTables[category];
+  if (monthlyNet <= 0) {
+    return { bracket: table[0], gross: 0 };
+  }
+  let lower = 0;
+  for (const bracket of table) {
+    const gross = monthlyNet / (1 - bracket.rate);
+    if (gross > lower && gross <= bracket.upTo) {
+      return { bracket, gross };
+    }
+    lower = bracket.upTo;
+  }
+  const last = table[table.length - 1];
+  return { bracket: last, gross: monthlyNet / (1 - last.rate) };
+}
